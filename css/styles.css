@@ -392,11 +392,14 @@ a:hover {
 /* Content Area */
 .content-area {
     padding: 30px 45px;
-    max-width: 1200px;
-    margin: 0 auto;
     width: 100%;
     box-sizing: border-box;
     flex: 1;
+}
+
+.dashboard-container {
+    max-width: 1200px;
+    margin: 0 auto;
 }
 
 .page-title {
