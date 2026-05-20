@@ -652,26 +652,22 @@
             let loggedInUser = null;
 
             try {
-                // Tembak API secara Asinkron (Timeout 6 Detik agar cepat fallback jika lemot)
-                const controller = new AbortController();
-                const timeoutId = setTimeout(() => controller.abort(), 6000);
+                // Tembak API Supabase secara Asinkron
+                const { data: users, error } = await supabase
+                    .from('users')
+                    .select('*');
                 
-                const response = await fetch(GAS_API + '?action=getUsers&t=' + new Date().getTime(), {
-                    signal: controller.signal
-                });
-                clearTimeout(timeoutId);
+                if (error) throw error;
                 
-                const data = await response.json();
-                
-                if (data && data.users && data.users.length > 0) {
-                    // Cari kecocokan di database Cloud (Google Sheets)
-                    loggedInUser = data.users.find(u => u.username === uname && u.password === pwd);
+                if (users && users.length > 0) {
+                    // Cari kecocokan di database Cloud (Supabase)
+                    loggedInUser = users.find(u => u.username === uname && u.password === pwd);
                     if (loggedInUser) {
                         authenticated = true;
                     }
                 }
             } catch (error) {
-                console.warn("Koneksi cloud gagal, menggunakan offline fallback credentials:", error);
+                console.warn("Koneksi Supabase gagal, menggunakan offline fallback credentials:", error);
                 // Fallback ke kredensial offline jika koneksi internet terputus
                 loggedInUser = OFFLINE_USERS.find(u => u.username === uname && u.password === pwd);
                 if (loggedInUser) {
@@ -711,6 +707,8 @@
         }
     </script>
 
+    <!-- Supabase SDK CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <!-- Custom JS -->
     <script src="js/main.js"></script>
 

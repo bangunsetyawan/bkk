@@ -692,6 +692,8 @@
         <p style="color: #7f8c8d;">Sedang mengambil data dari Google Sheets, mohon tunggu sebentar...</p>
     </div>
 
+    <!-- Supabase SDK CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <!-- Custom JS -->
     <script src="js/main.js"></script>
     <!-- SheetJS for Excel Reading -->
@@ -1060,12 +1062,12 @@
                 // Focus on the new input
                 const input = td.querySelector('input');
                 if(input) {
-                    input.focus();
+                        input.focus();
                 }
             }
         }
 
-        // Fungsi Save Data ke LocalStorage dan Google Sheets
+        // Fungsi Save Data ke LocalStorage dan Supabase
         async function saveData() {
             const btn = document.querySelector('.btn-primary[onclick="saveData()"]');
             const originalText = btn.innerHTML;
@@ -1097,54 +1099,60 @@
                 }
             });
 
-            // 1. Ambil data lama
-            let allData = [];
-            const savedData = localStorage.getItem('alumniData');
-            if(savedData) {
-                try { allData = JSON.parse(savedData); } catch(e){}
-            }
-
-            // 2. Hapus data lama yang SESUAI DENGAN view saat ini (agar bisa diganti dengan tableData)
-            if (selectedYear && selectedMajor) {
-                allData = allData.filter(item => {
-                    const itemYear = item.TAHUN_LULUS || item.Angkatan;
-                    const itemMajor = item.KOMPETENSI_KEAHLIAN || item.KOMPETENSI || item.Jurusan || "";
-                    
-                    const matchYear = String(itemYear) === String(selectedYear);
-                    let matchMajor = false;
-                    if(selectedMajor === 'TKJ' && (itemMajor.includes('TKJ') || itemMajor.includes('Komputer'))) matchMajor = true;
-                    else if(selectedMajor === 'AKL' && (itemMajor.includes('AKL') || itemMajor.includes('Akuntansi'))) matchMajor = true;
-                    else if(selectedMajor === 'TKR' && (itemMajor.includes('TKR') || itemMajor.includes('Otomotif') || itemMajor.includes('Kendaraan') || itemMajor.includes('TKRO'))) matchMajor = true;
-
-                    // Kembalikan true JIKA BUKAN data yang sedang kita edit
-                    return !(matchYear && matchMajor);
-                });
-            } else {
-                // Jika selectedYear tidak ada (kasus edge case), timpa saja
-                allData = [];
-            }
-
-            // 3. Gabungkan data luar dengan data tabel yang baru
-            const dataToSave = [...allData, ...tableData];
-
-            // 4. Simpan Lokal Dulu
-            localStorage.setItem('alumniData', JSON.stringify(dataToSave));
-            updateAlumniCounts();
-            
-            // 2. Simpan ke Google Sheets (Cloud)
-            const API_URL = "https://script.google.com/macros/s/AKfycbxOHqXzXHPxP6CjPnp5TwVeyho7IPb21NUeE5uqORUDsTh0MAvO7D8b1C8zn68anlVU/exec";
             try {
-                await fetch(API_URL, {
-                    method: 'POST',
-                    body: JSON.stringify({ action: 'saveAll', token: 'BKK_SMKNUDA_2026', data: dataToSave })
+                // 1. Hapus data lama yang SESUAI DENGAN view saat ini dari Supabase
+                if (selectedYear && selectedMajor) {
+                    let deleteQuery = supabase.from('alumni').delete().eq('tahun_lulus', selectedYear);
+                    if (selectedMajor === 'TKJ') {
+                        deleteQuery = deleteQuery.or('kompetensi_keahlian.ilike.%tkj%,kompetensi_keahlian.ilike.%komputer%');
+                    } else if (selectedMajor === 'AKL') {
+                        deleteQuery = deleteQuery.or('kompetensi_keahlian.ilike.%akl%,kompetensi_keahlian.ilike.%akuntansi%');
+                    } else if (selectedMajor === 'TKR') {
+                        deleteQuery = deleteQuery.or('kompetensi_keahlian.ilike.%tkr%,kompetensi_keahlian.ilike.%otomotif%,kompetensi_keahlian.ilike.%kendaraan%,kompetensi_keahlian.ilike.%tkro%');
+                    }
+                    const { error: deleteError } = await deleteQuery;
+                    if (deleteError) throw deleteError;
+                }
+
+                // 2. Masukkan baris baru ke Supabase jika ada data yang mau disimpan
+                if (tableData.length > 0) {
+                    const dbRows = tableData.map(row => {
+                        const dbRow = {};
+                        for (let key in row) {
+                            if (key === 'NO') continue;
+                            dbRow[key.toLowerCase()] = row[key];
+                        }
+                        return dbRow;
+                    });
+                    const { error: insertError } = await supabase.from('alumni').insert(dbRows);
+                    if (insertError) throw insertError;
+                }
+
+                // 3. Tarik seluruh data terbaru dari Supabase untuk update cache lokal
+                const { data: cloudData, error: fetchError } = await supabase.from('alumni').select('*');
+                if (fetchError) throw fetchError;
+
+                // Normalisasi kolom ke UPPERCASE
+                const normalized = (cloudData || []).map(row => {
+                    const newRow = {};
+                    for (let key in row) {
+                        newRow[key.toUpperCase()] = row[key];
+                    }
+                    return newRow;
                 });
-                
+
+                localStorage.setItem('alumniData', JSON.stringify(normalized));
+                updateAlumniCounts();
+                if (selectedYear) {
+                    updateMajorCounts(selectedYear);
+                }
+
                 btn.innerHTML = '<i class="fas fa-check"></i> Tersimpan di Cloud!';
                 btn.style.backgroundColor = '#27ae60';
             } catch(e) {
-                console.error("Gagal ke cloud:", e);
-                btn.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Tersimpan Lokal (Cloud Error)';
-                btn.style.backgroundColor = '#f39c12';
+                console.error("Gagal menyimpan ke Supabase:", e);
+                btn.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Gagal Menyimpan';
+                btn.style.backgroundColor = '#e74c3c';
             }
 
             setTimeout(() => {
@@ -1159,23 +1167,26 @@
             const tbody = document.querySelector('.data-table tbody');
             let originalTitle = document.getElementById('tableSubtitle').innerHTML;
             
-            // 1. Render data lokal ditiadakan (Cloud First)
             const savedData = localStorage.getItem("alumniData");
-            
-            // 2. Tampilkan indikator sinkronisasi di background
             document.getElementById('tableSubtitle').innerHTML = '<i class="fas fa-sync fa-spin" style="color: var(--primary);"></i> Sinkronisasi Cloud...';
 
-            const API_URL = "https://script.google.com/macros/s/AKfycbxOHqXzXHPxP6CjPnp5TwVeyho7IPb21NUeE5uqORUDsTh0MAvO7D8b1C8zn68anlVU/exec?t=" + new Date().getTime();
-            
-            // 3. Ambil data asli dari Google Sheets di latar belakang
-            fetch(API_URL, { cache: "no-store" })
-                .then(response => response.json())
-                .then(cloudData => {
-                    document.getElementById('globalLoader').style.display = 'none'; // Sembunyikan setelah load
-                    localStorage.setItem('alumniData', JSON.stringify(cloudData));
-                    if(cloudData && cloudData.length > 0) {
+            supabase.from('alumni').select('*')
+                .then(({ data: cloudData, error }) => {
+                    if (error) throw error;
+                    document.getElementById('globalLoader').style.display = 'none';
+
+                    const normalized = (cloudData || []).map(row => {
+                        const newRow = {};
+                        for (let key in row) {
+                            newRow[key.toUpperCase()] = row[key];
+                        }
+                        return newRow;
+                    });
+
+                    localStorage.setItem('alumniData', JSON.stringify(normalized));
+                    if(normalized && normalized.length > 0) {
                         if (selectedYear && selectedMajor) {
-                            loadFilteredData(); // Timpa layar dengan data terbaru yang SESUAI FILTER
+                            loadFilteredData();
                         }
                     } else if (!savedData || JSON.parse(savedData).length === 0) {
                         if (selectedYear && selectedMajor) {
@@ -1189,7 +1200,7 @@
                     }
                 })
                 .catch(e => {
-                    console.error("Gagal load dari cloud, menggunakan data lokal:", e);
+                    console.error("Gagal load dari Supabase, menggunakan data lokal:", e);
                     document.getElementById("tableSubtitle").innerHTML = "<i class='fas fa-wifi' style='color: #e74c3c;'></i> Mode Offline. " + originalTitle;
                     
                     const savedData = localStorage.getItem("alumniData");
@@ -1210,7 +1221,6 @@
         function updateAlumniCounts() {
             const savedData = localStorage.getItem('alumniData');
             if (!savedData) return;
-
             const alumni = JSON.parse(savedData);
             const countMap = {};
 

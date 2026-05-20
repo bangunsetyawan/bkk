@@ -577,35 +577,45 @@
         <p style="color: #7f8c8d;">Sedang mengambil data dari Google Sheets, mohon tunggu sebentar...</p>
     </div>
 
-    <!-- Custom JS -->
+    <!-- Supabase SDK CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <!-- Global JS -->
     <script src="js/main.js"></script>
     <script>
         window.onload = function () {
-            // TIDAK ADA localStorage - Selalu fetch langsung dari Google Sheets
-            const API_URL = "https://script.google.com/macros/s/AKfycbxOHqXzXHPxP6CjPnp5TwVeyho7IPb21NUeE5uqORUDsTh0MAvO7D8b1C8zn68anlVU/exec?t=" + new Date().getTime();
-
+            // TIDAK ADA localStorage - Selalu fetch langsung dari Supabase
             document.getElementById('yearFilter').addEventListener('change', function (e) {
                 if (window._alumniDataCache) {
                     loadDashboardData(e.target.value, window._alumniDataCache);
                 }
             });
 
-            fetch(API_URL, { cache: "no-store" })
-                .then(response => response.json())
-                .then(cloudData => {
+            supabase.from('alumni').select('*')
+                .then(({ data: cloudData, error }) => {
+                    if (error) throw error;
                     document.getElementById('globalLoader').style.display = 'none';
                     const now = new Date().toLocaleString('id-ID', { dateStyle: 'medium', timeStyle: 'short' });
                     const updateEl = document.getElementById('lastUpdateTime');
                     if (updateEl) updateEl.innerText = now;
 
-                    window._alumniDataCache = cloudData || [];
+                    // Normalisasi kolom dari lowercase (Supabase/PostgreSQL) ke uppercase (Frontend Compatibility)
+                    const normalized = (cloudData || []).map(row => {
+                        const newRow = {};
+                        for (let key in row) {
+                            newRow[key.toUpperCase()] = row[key];
+                        }
+                        return newRow;
+                    });
+
+                    window._alumniDataCache = normalized;
+                    localStorage.setItem('alumniData', JSON.stringify(normalized));
                     loadDashboardData('all', window._alumniDataCache);
                 })
                 .catch(e => {
-                    console.warn("Gagal koneksi ke Google Sheets:", e);
+                    console.warn("Gagal koneksi ke Supabase:", e);
                     document.getElementById('globalLoader').style.display = 'none';
                     const updateEl = document.getElementById('lastUpdateTime');
-                    if (updateEl) updateEl.innerText = 'Gagal terhubung - Refresh halaman';
+                    if (updateEl) updateEl.innerText = 'Gagal terhubung ke database - Muat ulang';
                     loadDashboardData('all', []);
                 });
         };

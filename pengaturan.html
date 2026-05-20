@@ -170,7 +170,7 @@
                 <!-- Manajemen Pengguna -->
                 <div class="settings-card">
                     <h2><i class="fas fa-users-cog"></i> Manajemen Pengguna (Login)</h2>
-                    <p style="color: var(--text-muted); margin-bottom: 15px;">Kelola akun yang bisa mengakses sistem Dasbor BKK secara real-time. (Tersimpan di Cloud Server Google Sheets)</p>
+                    <p style="color: var(--text-muted); margin-bottom: 15px;">Kelola akun yang bisa mengakses sistem Dasbor BKK secara real-time. (Tersimpan di Cloud Database Supabase)</p>
                     
                     <div style="overflow-x: auto; margin-bottom: 15px;">
                         <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.95rem;">
@@ -218,27 +218,23 @@
                 <div class="settings-card danger-zone">
                     <h2><i class="fas fa-exclamation-triangle"></i> Zona Berbahaya</h2>
                     <p style="margin-bottom: 10px; color: #555; line-height: 1.5;">
-                        <b>Info:</b> Aplikasi sekarang sudah <b>tidak menyimpan data di browser</b>. Semua data selalu diambil langsung dari Google Sheets setiap kali halaman dibuka. Tampilan di semua browser/device akan <b>selalu sama otomatis</b>.
+                        <b>Info:</b> Aplikasi sekarang sudah terintegrasi secara cloud penuh dengan Supabase. Tampilan di semua browser/device akan selalu sinkron otomatis secara real-time.
                     </p>
                     <p style="margin-bottom: 20px; color: #c0392b; line-height: 1.5;">
-                        <b>Reset Database</b> akan menghapus <b>SELURUH data alumni dari Google Sheets</b> secara permanen dan tidak bisa dibatalkan!
+                        <b>Reset Database</b> akan menghapus <b>SELURUH data alumni, mitra, MOU, dan kunjungan dari cloud Supabase</b> secara permanen dan tidak bisa dibatalkan!
                     </p>
                     <button class="btn btn-danger" onclick="resetDatabase()" style="padding: 10px 20px; font-weight: bold;">
-                        <i class="fas fa-trash-alt"></i> Reset Total (Hapus Data di Google Sheets)
+                        <i class="fas fa-trash-alt"></i> Reset Total (Hapus Data di Supabase Cloud)
                     </button>
                 </div>
             </div>
         </main>
     </div>
 
+    <!-- Supabase SDK CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="js/main.js"></script>
     <script>
-        // ============================================================
-        // KONFIGURASI API (sama dengan halaman lain)
-        // ============================================================
-        const GAS_API = "https://script.google.com/macros/s/AKfycbxOHqXzXHPxP6CjPnp5TwVeyho7IPb21NUeE5uqORUDsTh0MAvO7D8b1C8zn68anlVU/exec";
-        const SECRET_TOKEN = "BKK_SMKNUDA_2026";
-
         let usersList = [];
 
         window.onload = function() {
@@ -249,28 +245,22 @@
         };
 
         // ============================================================
-        // MANAJEMEN PENGGUNA - Tersimpan di Google Sheets (Cloud)
+        // MANAJEMEN PENGGUNA - Tersimpan di Supabase
         // ============================================================
         function loadUsers() {
             const tbody = document.getElementById('userTableBody');
-            tbody.innerHTML = '<tr><td colspan="3" style="padding: 20px; text-align:center; color: var(--text-muted);"><i class="fas fa-spinner fa-spin"></i> Memuat data pengguna dari server...</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="3" style="padding: 20px; text-align:center; color: var(--text-muted);"><i class="fas fa-spinner fa-spin"></i> Memuat data pengguna dari cloud...</td></tr>';
             
-            fetch(GAS_API + '?action=getUsers&t=' + new Date().getTime())
-                .then(r => r.json())
-                .then(data => {
-                    if (data && data.users && data.users.length > 0) {
-                        usersList = data.users;
-                    } else {
-                        // Fallback default jika server belum ada data user
-                        usersList = [{ username: 'bkk', password: 'smknuda', name: 'Admin Utama BKK' }];
-                    }
+            supabase.from('users').select('*')
+                .then(({ data, error }) => {
+                    if (error) throw error;
+                    usersList = data || [];
                     renderUserTable();
                 })
                 .catch(err => {
-                    // Jika gagal koneksi, tampilkan info default aja
+                    console.error("Gagal load users dari Supabase:", err);
                     usersList = [{ username: 'bkk', password: '(tersimpan di server)', name: 'Admin Utama BKK' }];
                     renderUserTable();
-                    console.warn('Gagal fetch users dari GAS:', err);
                 });
         }
 
@@ -281,7 +271,7 @@
                 tbody.innerHTML += `
                     <tr style="border-bottom: 1px solid var(--border);">
                         <td style="padding: 12px; font-weight: 600;">${u.username}</td>
-                        <td style="padding: 12px;">${u.name}</td>
+                        <td style="padding: 12px;">${u.name || ''}</td>
                         <td style="padding: 12px; text-align: center;">
                             <button onclick="showUserForm(${index})" style="background: #3498db; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; margin-right: 5px;" title="Edit"><i class="fas fa-edit"></i></button>
                             ${usersList.length > 1 ? `<button onclick="deleteUser(${index})" style="background: #e74c3c; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer;" title="Hapus"><i class="fas fa-trash"></i></button>` : ''}
@@ -323,27 +313,39 @@
             if (!uname) { alert("Username tidak boleh kosong!"); return; }
 
             if (index >= 0) {
-                usersList[index].username = uname;
-                usersList[index].name = name;
-                if (pwd) usersList[index].password = pwd;
-            } else {
-                if (!pwd) { alert("Password tidak boleh kosong untuk user baru!"); return; }
-                usersList.push({ username: uname, password: pwd, name: name });
-            }
+                // Update user
+                const u = usersList[index];
+                const updateData = { username: uname, name: name };
+                if (pwd) updateData.password = pwd;
 
-            // Simpan ke Google Sheets via GAS
-            fetch(GAS_API, {
-                method: 'POST',
-                mode: 'no-cors',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ token: SECRET_TOKEN, action: 'saveUsers', users: usersList })
-            }).then(() => {
-                cancelUserForm();
-                renderUserTable();
-                alert('? Data pengguna berhasil disimpan ke server! Berlaku di semua perangkat.');
-            }).catch(e => {
-                alert('?? Gagal menyimpan ke server. Pastikan koneksi internet aktif.');
-            });
+                supabase.from('users').update(updateData).eq('id', u.id)
+                    .then(({ error }) => {
+                        if (error) throw error;
+                        alert('Data pengguna berhasil diperbarui!');
+                        cancelUserForm();
+                        loadUsers();
+                    })
+                    .catch(err => {
+                        console.error("Gagal update user:", err);
+                        alert("Gagal memperbarui pengguna: " + err.message);
+                    });
+            } else {
+                // Insert new user
+                if (!pwd) { alert("Password tidak boleh kosong untuk user baru!"); return; }
+                const insertData = { username: uname, password: pwd, name: name };
+
+                supabase.from('users').insert([insertData])
+                    .then(({ error }) => {
+                        if (error) throw error;
+                        alert('Pengguna baru berhasil ditambahkan!');
+                        cancelUserForm();
+                        loadUsers();
+                    })
+                    .catch(err => {
+                        console.error("Gagal insert user:", err);
+                        alert("Gagal menambahkan pengguna baru: " + err.message);
+                    });
+            }
         }
 
         function deleteUser(index) {
@@ -351,17 +353,18 @@
                 alert("Tidak dapat menghapus user terakhir.");
                 return;
             }
-            if (confirm("Yakin ingin menghapus pengguna '" + usersList[index].username + "'?")) {
-                usersList.splice(index, 1);
-                fetch(GAS_API, {
-                    method: 'POST',
-                    mode: 'no-cors',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ token: SECRET_TOKEN, action: 'saveUsers', users: usersList })
-                }).then(() => {
-                    renderUserTable();
-                    alert('Pengguna berhasil dihapus dari server.');
-                });
+            const u = usersList[index];
+            if (confirm("Yakin ingin menghapus pengguna '" + u.username + "'?")) {
+                supabase.from('users').delete().eq('id', u.id)
+                    .then(({ error }) => {
+                        if (error) throw error;
+                        alert('Pengguna berhasil dihapus dari cloud.');
+                        loadUsers();
+                    })
+                    .catch(err => {
+                        console.error("Gagal menghapus user:", err);
+                        alert("Gagal menghapus pengguna: " + err.message);
+                    });
             }
         }
 
@@ -388,40 +391,31 @@
         }
 
         // ============================================================
-        // BERSIHKAN CACHE LOKAL (tanpa hapus data di cloud)
+        // RESET TOTAL (Hapus data di cloud Supabase)
         // ============================================================
-        function clearLocalCache() {
-            if (confirm("Bersihkan semua cache lokal browser di perangkat ini?\n\nData di Google Sheets (server) AMAN dan akan dimuat ulang otomatis.")) {
-                // Hapus semua cache lokal
-                localStorage.clear();
-                alert("? Cache lokal berhasil dibersihkan!\n\nAplikasi akan memuat ulang data dari server.");
-                window.location.href = 'admin_dashboard.html';
-            }
-        }
-
-        // ============================================================
-        // RESET TOTAL (Hapus data di cloud juga)
-        // ============================================================
-        function resetDatabase() {
-            const confirm1 = confirm("?? PERINGATAN KERAS:\nIni akan menghapus SELURUH data alumni, mitra, MOU, dll dari Google Sheets (server cloud).\n\nApakah Anda BENAR-BENAR yakin?");
+        async function resetDatabase() {
+            const confirm1 = confirm("⚠️ PERINGATAN KERAS:\nIni akan menghapus SELURUH data alumni, mitra, MOU, dan kunjungan industri dari database cloud Supabase.\n\nApakah Anda BENAR-BENAR yakin?");
             if (confirm1) {
                 const confirm2 = prompt("Ketik 'RESET' untuk mengonfirmasi:");
                 if (confirm2 === 'RESET') {
                     // Hapus cache lokal
                     localStorage.clear();
-                    // Kirim perintah reset ke cloud
-                    fetch(GAS_API, {
-                        method: 'POST',
-                        mode: 'no-cors',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ token: SECRET_TOKEN, action: 'resetAll' })
-                    }).then(() => {
-                        alert('? Database berhasil direset total hingga ke server cloud.');
+                    
+                    try {
+                        // Jalankan delete di Supabase untuk seluruh tabel data
+                        const deleteAlumni = supabase.from('alumni').delete().neq('id', 0);
+                        const deleteMou = supabase.from('mou').delete().neq('id', 0);
+                        const deleteKunjungan = supabase.from('kunjungan').delete().neq('id', 0);
+                        
+                        await Promise.all([deleteAlumni, deleteMou, deleteKunjungan]);
+                        
+                        alert('🎉 Database berhasil direset total di cloud Supabase.');
                         window.location.reload();
-                    }).catch(e => {
-                        alert('Cache lokal dihapus, tapi koneksi ke server terputus.');
+                    } catch(e) {
+                        console.error("Gagal mereset database:", e);
+                        alert('Gagal mereset database di cloud: ' + e.message);
                         window.location.reload();
-                    });
+                    }
                 } else {
                     alert("Dibatalkan. Kata kunci tidak cocok.");
                 }
@@ -430,4 +424,3 @@
     </script>
 </body>
 </html>
-

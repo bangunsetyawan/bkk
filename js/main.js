@@ -1,4 +1,12 @@
+// ============================================================
+// INITIALIZATION SUPABASE CLIENT
+// ============================================================
+const SUPABASE_URL = "https://ilnfzebpoczlwocpzlop.supabase.co";
+const SUPABASE_KEY = "sb_publishable_75Y_xJl_9ntQt3R2TnkSUw_pktf_FbV";
+const supabase = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY) : null;
+
 document.addEventListener('DOMContentLoaded', function () {
+
 
     // ============================================================
     // SIDEBAR TOGGLE — Minimize Panel

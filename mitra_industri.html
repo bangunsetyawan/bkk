@@ -184,6 +184,8 @@
         </main>
     </div>
 
+    <!-- Supabase SDK CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <!-- Custom JS -->
     <script src="js/main.js"></script>
     <script>
@@ -191,17 +193,23 @@
             // 1. Tampilkan lokal instan
             loadMitraIndustri();
             
-            // 2. Sinkronisasi background
-            const API_URL = "https://script.google.com/macros/s/AKfycbxOHqXzXHPxP6CjPnp5TwVeyho7IPb21NUeE5uqORUDsTh0MAvO7D8b1C8zn68anlVU/exec?t=" + new Date().getTime();
-            fetch(API_URL, { cache: "no-store" })
-                .then(response => response.json())
-                .then(cloudData => {
+            // 2. Sinkronisasi background dengan Supabase
+            supabase.from('alumni').select('*')
+                .then(({ data: cloudData, error }) => {
+                    if (error) throw error;
                     if(cloudData && cloudData.length > 0) {
-                        localStorage.setItem('alumniData', JSON.stringify(cloudData));
+                        const normalized = cloudData.map(row => {
+                            const newRow = {};
+                            for (let key in row) {
+                                newRow[key.toUpperCase()] = row[key];
+                            }
+                            return newRow;
+                        });
+                        localStorage.setItem('alumniData', JSON.stringify(normalized));
                         loadMitraIndustri(); // refresh
                     }
                 })
-                .catch(e => console.log("Offline mode."));
+                .catch(e => console.log("Gagal sinkronisasi Supabase, menggunakan mode offline:", e));
         };
 
         function loadMitraIndustri() {
@@ -357,6 +365,3 @@
     </script>
 </body>
 </html>
-
-
-

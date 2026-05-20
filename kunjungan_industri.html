@@ -196,6 +196,8 @@
         </main>
     </div>
 
+    <!-- Supabase SDK CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <!-- Custom JS -->
     <script src="js/main.js"></script>
     <script>
@@ -206,17 +208,30 @@
         };
 
         function loadData() {
-            const savedData = localStorage.getItem('kunjunganData');
-            if (savedData) {
-                try {
-                    tableData = JSON.parse(savedData);
-                } catch(e) {
-                    tableData = [];
-                }
-            } else {
-                tableData = [];
-            }
-            renderTable();
+            const tbody = document.getElementById('dataTableBody');
+            tbody.innerHTML = `<tr><td colspan="7" style="text-align: center; padding: 20px;"><i class="fas fa-sync fa-spin"></i> Sinkronisasi Cloud...</td></tr>`;
+
+            supabase.from('kunjungan').select('*')
+                .then(({ data, error }) => {
+                    if (error) throw error;
+                    tableData = data || [];
+                    localStorage.setItem('kunjunganData', JSON.stringify(tableData));
+                    renderTable();
+                })
+                .catch(e => {
+                    console.error("Gagal sinkronisasi Supabase, menggunakan data lokal:", e);
+                    const savedData = localStorage.getItem('kunjunganData');
+                    if (savedData) {
+                        try {
+                            tableData = JSON.parse(savedData);
+                        } catch(err) {
+                            tableData = [];
+                        }
+                    } else {
+                        tableData = [];
+                    }
+                    renderTable();
+                });
         }
 
         function renderTable() {
@@ -288,19 +303,56 @@
             });
         }
 
-        function saveData() {
-            syncDataFromDOM();
-            localStorage.setItem('kunjunganData', JSON.stringify(tableData));
-            
-            // Feedback Visual Tersimpan
+        async function saveData() {
             const btn = document.querySelector('.btn-primary[onclick="saveData()"]');
             const originalText = btn.innerHTML;
-            btn.innerHTML = '<i class="fas fa-check"></i> Tersimpan!';
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Menyimpan...';
+            btn.style.pointerEvents = 'none';
+
+            syncDataFromDOM();
+            localStorage.setItem('kunjunganData', JSON.stringify(tableData));
+
+            try {
+                // 1. Hapus seluruh data kunjungan lama dari Supabase
+                const { error: deleteError } = await supabase.from('kunjungan').delete().neq('id', 0);
+                if (deleteError) throw deleteError;
+
+                // 2. Insert baris data kunjungan baru jika ada
+                if (tableData.length > 0) {
+                    const dbRows = tableData.map(row => {
+                        return {
+                            tempat: row.tempat,
+                            alamat_cp: row.alamat_cp,
+                            waktu: row.waktu,
+                            jumlah_peserta: row.jumlah_peserta,
+                            dokumentasi: row.dokumentasi
+                        };
+                    });
+                    const { error: insertError } = await supabase.from('kunjungan').insert(dbRows);
+                    if (insertError) throw insertError;
+                }
+
+                // 3. Tarik kembali data terbaru agar memiliki ID Supabase yang sah
+                const { data: cloudData, error: fetchError } = await supabase.from('kunjungan').select('*');
+                if (fetchError) throw fetchError;
+                tableData = cloudData || [];
+                localStorage.setItem('kunjunganData', JSON.stringify(tableData));
+                renderTable();
+
+                btn.innerHTML = '<i class="fas fa-check"></i> Tersimpan!';
+                btn.style.backgroundColor = '#27ae60';
+            } catch(e) {
+                console.error("Gagal menyimpan ke Supabase:", e);
+                btn.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Gagal!';
+                btn.style.backgroundColor = '#e74c3c';
+            }
+
             setTimeout(() => {
                 btn.innerHTML = originalText;
-            }, 1500);
+                btn.style.backgroundColor = '';
+                btn.style.pointerEvents = 'auto';
+            }, 3000);
         }
     </script>
 </body>
 </html>
-
