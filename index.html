@@ -2,22 +2,10 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=1200">
-    <title>Login — BKK SMK NU Darussalam</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bursa Kerja Khusus — SMK NU Darussalam</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <script>
-        (function(){
-            var ua = navigator.userAgent.toLowerCase();
-            if (ua.indexOf('firefox') > -1) {
-                document.documentElement.style.transform = 'scale(0.75)';
-                document.documentElement.style.transformOrigin = 'top left';
-                document.documentElement.style.width = '133.333vw';
-            } else {
-                document.documentElement.style.zoom = '0.75';
-            }
-        })();
-    </script>
     <style>
         *, *::before, *::after { 
             box-sizing: border-box; 
@@ -36,285 +24,94 @@
             --text-muted: #707a72;
             --border: rgba(125, 157, 123, 0.15);
             --gold-accent: #c5a880;
-            --shadow: 0 30px 60px rgba(92, 117, 90, 0.08);
+            --shadow: 0 15px 35px rgba(92, 117, 90, 0.05);
+            --primary-bg: #eef2ee;
+            --primary-dark: #3e523d;
         }
 
-        html, body {
-            height: 100%;
+        body {
             font-family: 'Plus Jakarta Sans', sans-serif;
-            background: radial-gradient(circle at 10% 20%, #f4f7f4 0%, var(--warm-cream) 90%);
+            background-color: var(--warm-cream);
             color: var(--charcoal);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-            position: relative;
-        }
-
-        /* --- BACKGROUND ORNAMENT --- */
-        .bg-glow-1 {
-            position: absolute;
-            top: -10%;
-            left: -10%;
-            width: 50%;
-            height: 50%;
-            background: radial-gradient(circle, rgba(125,157,123,0.15) 0%, transparent 60%);
-            z-index: 0;
-            pointer-events: none;
-        }
-
-        .bg-glow-2 {
-            position: absolute;
-            bottom: -10%;
-            right: -10%;
-            width: 60%;
-            height: 60%;
-            background: radial-gradient(circle, rgba(197,168,128,0.1) 0%, transparent 70%);
-            z-index: 0;
-            pointer-events: none;
-        }
-
-        /* --- CONTAINER SHELL --- */
-        .login-container {
-            width: 100%;
-            max-width: 1160px;
-            min-height: 660px;
-            background: var(--pure-white);
-            border-radius: 32px;
             display: grid;
-            grid-template-columns: 1.2fr 1fr;
-            box-shadow: var(--shadow);
-            border: 1px solid rgba(125, 157, 123, 0.1);
+            grid-template-columns: 380px 1fr;
+            height: 100vh;
             overflow: hidden;
-            position: relative;
-            z-index: 10;
-            animation: fadeInScale 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
         }
 
-        /* --- LEFT COLUMN: WELCOME & BANNER --- */
-        .column-welcome {
-            background-color: var(--sage-light);
-            padding: 50px 60px;
+        /* --- LEFT COLUMN: LOGIN SIDEBAR --- */
+        .login-sidebar {
+            background-color: var(--pure-white);
+            border-right: 1px solid var(--border);
+            padding: 40px 30px;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
+            height: 100vh;
+            overflow-y: auto;
             position: relative;
-            overflow: hidden;
+            z-index: 10;
         }
 
-        .column-welcome::before {
-            content: '';
-            position: absolute;
-            top: 0; right: 0;
-            width: 150px; height: 100%;
-            background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.3));
-            pointer-events: none;
-        }
-
-        .header-logos {
+        .brand-header {
             display: flex;
             align-items: center;
-            gap: 16px;
-            animation: fadeUp 0.8s ease both;
+            gap: 12px;
+            margin-bottom: 30px;
         }
 
-        .logo-wrapper {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            background: var(--pure-white);
-            border: 1px solid var(--border);
-            padding: 8px 16px;
-            border-radius: 50px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.02);
-        }
-
-        .logo-wrapper img {
-            height: 32px;
+        .brand-header img {
+            height: 35px;
             width: auto;
-            object-fit: contain;
         }
 
-        .logo-divider {
+        .brand-divider {
             width: 1px;
-            height: 20px;
+            height: 22px;
             background-color: var(--border);
         }
 
-        .brand-text {
-            font-size: 0.8rem;
+        .brand-title {
+            font-size: 0.82rem;
             font-weight: 700;
             letter-spacing: 0.08em;
             color: var(--sage-dark);
             text-transform: uppercase;
+            line-height: 1.2;
         }
 
-        .welcome-content {
+        .form-section {
             margin: auto 0;
             padding: 20px 0;
-            animation: fadeUp 0.9s 0.1s ease both;
-        }
-
-        /* BANNER - FIX TERPOTONG */
-        .banner-container {
-            width: 100%;
-            max-width: 580px;
-            margin: 0 auto 30px auto;
-            border-radius: 20px;
-            overflow: hidden;
-            border: 4px solid var(--pure-white);
-            box-shadow: 0 15px 35px rgba(92, 117, 90, 0.06);
-            background: var(--pure-white);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .banner-container img {
-            width: 100%;
-            height: auto;
-            max-height: 280px;
-            object-fit: contain; /* Memastikan gambar utuh tidak terpotong sama sekali */
-            display: block;
-            transition: transform 0.5s ease;
-        }
-
-        .banner-container:hover img {
-            transform: scale(1.02);
-        }
-
-        .eyebrow {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 0.75rem;
-            font-weight: 700;
-            letter-spacing: 0.12em;
-            text-transform: uppercase;
-            color: var(--gold-accent);
-            margin-bottom: 16px;
-        }
-
-        .eyebrow::after {
-            content: '';
-            display: block;
-            width: 35px;
-            height: 1.5px;
-            background-color: var(--gold-accent);
-        }
-
-        .welcome-title {
-            font-family: 'Cormorant Garamond', serif;
-            font-size: 2.8rem;
-            font-weight: 700;
-            line-height: 1.2;
-            color: var(--charcoal);
-            margin-bottom: 16px;
-        }
-
-        .welcome-title em {
-            font-style: italic;
-            font-weight: 400;
-            color: var(--sage-dark);
-        }
-
-        .welcome-desc {
-            font-size: 0.95rem;
-            font-weight: 400;
-            line-height: 1.7;
-            color: var(--text-muted);
-            max-width: 520px;
-        }
-
-        .welcome-footer {
-            font-size: 0.78rem;
-            color: var(--text-muted);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-top: 1px solid rgba(125, 157, 123, 0.1);
-            padding-top: 24px;
-            animation: fadeUp 1s 0.2s ease both;
-        }
-
-        .status-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            background-color: var(--pure-white);
-            padding: 5px 12px;
-            border-radius: 30px;
-            border: 1px solid var(--border);
-            font-size: 0.72rem;
-            font-weight: 600;
-            color: var(--sage-dark);
-        }
-
-        .status-dot {
-            width: 6px;
-            height: 6px;
-            background-color: #2ecc71;
-            border-radius: 50%;
-            box-shadow: 0 0 8px #2ecc71;
-            animation: blink 2s infinite;
-        }
-
-        @keyframes blink {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.4; }
-        }
-
-        /* --- RIGHT COLUMN: LOGIN FORM --- */
-        .column-form {
-            padding: 60px 50px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            background: var(--pure-white);
-            position: relative;
-            animation: slideIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
-        }
-
-        .form-header {
-            margin-bottom: 35px;
-        }
-
-        .form-eyebrow {
-            font-size: 0.75rem;
-            font-weight: 700;
-            letter-spacing: 0.1em;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            margin-bottom: 8px;
         }
 
         .form-title {
             font-family: 'Cormorant Garamond', serif;
-            font-size: 2.4rem;
+            font-size: 2.2rem;
             font-weight: 700;
             color: var(--charcoal);
             line-height: 1.1;
+            margin-bottom: 8px;
         }
 
         .form-desc {
-            font-size: 0.9rem;
+            font-size: 0.88rem;
             color: var(--text-muted);
-            margin-top: 8px;
+            margin-bottom: 25px;
         }
 
-        /* Inputs */
         .input-group {
-            margin-bottom: 22px;
+            margin-bottom: 18px;
         }
 
         .input-label {
             display: block;
-            font-size: 0.75rem;
+            font-size: 0.72rem;
             font-weight: 700;
             letter-spacing: 0.08em;
             text-transform: uppercase;
             color: var(--sage-dark);
-            margin-bottom: 8px;
+            margin-bottom: 6px;
         }
 
         .input-wrapper {
@@ -323,79 +120,466 @@
 
         .input-icon {
             position: absolute;
-            left: 16px;
+            left: 14px;
             top: 50%;
             transform: translateY(-50%);
             color: var(--text-muted);
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             pointer-events: none;
-            transition: color 0.3s;
         }
 
         .input-field {
             width: 100%;
-            background-color: var(--warm-cream);
-            border: 1px solid rgba(125, 157, 123, 0.12);
-            padding: 14px 16px 14px 44px;
-            border-radius: 12px;
-            font-size: 0.95rem;
+            background-color: var(--sage-light);
+            border: 1px solid rgba(125, 157, 123, 0.1);
+            padding: 12px 14px 12px 40px;
+            border-radius: 10px;
+            font-size: 0.9rem;
             font-family: inherit;
             color: var(--charcoal);
             outline: none;
             transition: all 0.3s ease;
         }
 
-        .input-field::placeholder {
-            color: var(--text-muted);
-            opacity: 0.55;
-        }
-
         .input-field:focus {
             background-color: var(--pure-white);
             border-color: var(--sage);
-            box-shadow: 0 0 0 4px rgba(125, 157, 123, 0.1);
-        }
-
-        .input-wrapper:focus-within .input-icon {
-            color: var(--sage-dark);
+            box-shadow: 0 0 0 4px rgba(125, 157, 123, 0.08);
         }
 
         .toggle-password {
             position: absolute;
-            right: 16px;
+            right: 14px;
             top: 50%;
             transform: translateY(-50%);
             background: none;
             border: none;
             color: var(--text-muted);
             cursor: pointer;
-            font-size: 0.9rem;
-            padding: 4px;
+            font-size: 0.85rem;
             outline: none;
-            transition: color 0.3s;
         }
 
-        .toggle-password:hover {
-            color: var(--sage-dark);
-        }
-
-        /* Error Banner */
         .error-message {
             display: none;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
             background-color: rgba(231, 76, 60, 0.06);
-            border: 1px solid rgba(231, 76, 60, 0.15);
-            border-radius: 10px;
-            padding: 12px 16px;
-            font-size: 0.85rem;
+            border: 1px solid rgba(231, 76, 60, 0.12);
+            border-radius: 8px;
+            padding: 10px 14px;
+            font-size: 0.8rem;
             color: #c0392b;
-            margin-bottom: 22px;
+            margin-bottom: 18px;
         }
 
         .error-message.show {
             display: flex;
             animation: shake 0.4s ease both;
+        }
+
+        .btn-login {
+            width: 100%;
+            padding: 13px;
+            background: linear-gradient(135deg, var(--sage) 0%, var(--sage-dark) 100%);
+            border: none;
+            border-radius: 10px;
+            color: var(--pure-white);
+            font-family: inherit;
+            font-size: 0.88rem;
+            font-weight: 700;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 6px 15px rgba(125, 157, 123, 0.18);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-login:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 10px 22px rgba(125, 157, 123, 0.25);
+        }
+
+        .btn-login:active {
+            transform: translateY(0);
+        }
+
+        .security-notice {
+            background-color: var(--sage-light);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 10px 14px;
+            font-size: 0.76rem;
+            color: var(--sage-dark);
+            line-height: 1.4;
+            display: flex;
+            gap: 8px;
+            margin-top: 25px;
+        }
+
+        .security-notice i {
+            margin-top: 2px;
+            flex-shrink: 0;
+        }
+
+        .sidebar-footer {
+            font-size: 0.72rem;
+            color: var(--text-muted);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 1px solid rgba(125, 157, 123, 0.08);
+            padding-top: 20px;
+            margin-top: 20px;
+        }
+
+        .server-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            background-color: var(--sage-light);
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-weight: 600;
+            color: var(--sage-dark);
+        }
+
+        .status-dot {
+            width: 5px;
+            height: 5px;
+            background-color: #2ecc71;
+            border-radius: 50%;
+            box-shadow: 0 0 6px #2ecc71;
+        }
+
+        /* --- RIGHT COLUMN: PUBLIC LANDING DASHBOARD --- */
+        .landing-main {
+            height: 100vh;
+            overflow-y: auto;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+
+        .welcome-banner {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: linear-gradient(135deg, #e4ede3 0%, var(--warm-cream) 100%);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 30px 40px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+        }
+
+        .welcome-banner::before {
+            content: '';
+            position: absolute;
+            top: -50px;
+            right: -50px;
+            width: 180px;
+            height: 180px;
+            background: radial-gradient(circle, rgba(197,168,128,0.12) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .banner-info {
+            max-width: 60%;
+        }
+
+        .eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.72rem;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--gold-accent);
+            margin-bottom: 8px;
+        }
+
+        .eyebrow::after {
+            content: '';
+            display: block;
+            width: 25px;
+            height: 1.5px;
+            background-color: var(--gold-accent);
+        }
+
+        .banner-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 2.2rem;
+            font-weight: 700;
+            line-height: 1.2;
+            color: var(--charcoal);
+            margin-bottom: 10px;
+        }
+
+        .banner-title em {
+            font-style: italic;
+            font-weight: 400;
+            color: var(--sage-dark);
+        }
+
+        .banner-desc {
+            font-size: 0.9rem;
+            line-height: 1.6;
+            color: var(--text-muted);
+        }
+
+        .banner-image {
+            height: 150px;
+            width: auto;
+            object-fit: contain;
+            border-radius: 12px;
+            border: 3px solid var(--pure-white);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.05);
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 15px;
+        }
+
+        .stat-card {
+            background-color: var(--pure-white);
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            transition: transform 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-2px);
+        }
+
+        .stat-icon {
+            width: 44px;
+            height: 44px;
+            background-color: rgba(125, 157, 123, 0.1);
+            color: var(--sage-dark);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+        }
+
+        .stat-info h3 {
+            font-size: 0.72rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 4px;
+        }
+
+        .stat-info p {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--charcoal);
+        }
+
+        /* Filter & Charts */
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .section-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--charcoal);
+        }
+
+        .filter-year {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--pure-white);
+            padding: 6px 12px;
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+            font-size: 0.85rem;
+        }
+
+        .filter-year select {
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            padding: 3px 6px;
+            outline: none;
+            font-family: inherit;
+        }
+
+        .charts-grid {
+            display: grid;
+            grid-template-columns: 1fr 1.2fr;
+            gap: 20px;
+        }
+
+        .chart-box {
+            background: var(--pure-white);
+            border-radius: 16px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+            padding: 20px;
+        }
+
+        .chart-box h3 {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: var(--primary-dark);
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .chart-container {
+            height: 240px;
+            position: relative;
+        }
+
+        /* Search Section */
+        .search-section {
+            background: var(--pure-white);
+            border-radius: 16px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+            padding: 25px;
+        }
+
+        .search-header {
+            margin-bottom: 15px;
+        }
+
+        .search-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--charcoal);
+            margin-bottom: 4px;
+        }
+
+        .search-desc {
+            font-size: 0.82rem;
+            color: var(--text-muted);
+        }
+
+        .search-bar {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .search-input-wrapper {
+            flex-grow: 1;
+            position: relative;
+        }
+
+        .search-input-wrapper i {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        .search-field {
+            width: 100%;
+            padding: 12px 14px 12px 40px;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            font-size: 0.9rem;
+            font-family: inherit;
+            outline: none;
+            transition: all 0.3s;
+        }
+
+        .search-field:focus {
+            border-color: var(--sage);
+            box-shadow: 0 0 0 4px rgba(125, 157, 123, 0.08);
+        }
+
+        .btn-search {
+            padding: 12px 25px;
+            background-color: var(--sage-dark);
+            color: var(--pure-white);
+            border: none;
+            border-radius: 10px;
+            font-family: inherit;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .btn-search:hover {
+            background-color: var(--charcoal);
+        }
+
+        .search-results {
+            display: none;
+            max-height: 250px;
+            overflow-y: auto;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+        }
+
+        .results-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.82rem;
+            text-align: left;
+        }
+
+        .results-table th {
+            background-color: var(--sage-light);
+            color: var(--sage-dark);
+            font-weight: 700;
+            padding: 10px 15px;
+            position: sticky;
+            top: 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .results-table td {
+            padding: 10px 15px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        /* --- GLOBAL LOADER --- */
+        #globalLoader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
         }
 
         @keyframes shake {
@@ -404,138 +588,82 @@
             40%, 80% { transform: translateX(6px); }
         }
 
-        /* Login Button */
-        .btn-login {
-            width: 100%;
-            padding: 15px;
-            background: linear-gradient(135deg, var(--sage) 0%, var(--sage-dark) 100%);
-            border: none;
-            border-radius: 12px;
-            color: var(--pure-white);
-            font-family: inherit;
-            font-size: 0.92rem;
-            font-weight: 700;
-            letter-spacing: 0.05em;
-            text-transform: uppercase;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 8px 20px rgba(125, 157, 123, 0.2);
-            position: relative;
-            overflow: hidden;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .btn-login:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 12px 28px rgba(125, 157, 123, 0.3);
-        }
-
-        .btn-login:active {
-            transform: translateY(0);
-        }
-
-        /* Divider & Alert */
-        .info-divider {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            margin: 30px 0 20px 0;
-            color: var(--text-muted);
-            font-size: 0.72rem;
-            text-transform: uppercase;
-            letter-spacing: 0.08em;
-        }
-
-        .info-divider::before, .info-divider::after {
-            content: '';
-            flex: 1;
-            height: 1px;
-            background-color: rgba(125, 157, 123, 0.1);
-        }
-
-        .notice-box {
-            background-color: var(--sage-light);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 12px 16px;
-            font-size: 0.8rem;
-            color: var(--sage-dark);
-            line-height: 1.5;
-            display: flex;
-            gap: 10px;
-        }
-
-        .notice-box i {
-            margin-top: 2px;
-            flex-shrink: 0;
-        }
-
-        /* Animations */
-        @keyframes fadeInScale {
-            from { opacity: 0; transform: scale(0.96); }
-            to { opacity: 1; transform: scale(1); }
-        }
-
-        @keyframes fadeUp {
-            from { opacity: 0; transform: translateY(16px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        @keyframes slideIn {
-            from { opacity: 0; transform: translateX(20px); }
-            to { opacity: 1; transform: translateX(0); }
-        }
-
-        /* Mobile Responsive */
-        @media (max-width: 992px) {
-            html, body {
-                overflow: auto;
-                height: auto;
-                min-height: 100vh;
-                padding: 20px;
-                display: flex;
-                align-items: center;
-            }
-
-            .login-container {
+        /* --- RESPONSIVE LAYOUT --- */
+        @media (max-width: 1024px) {
+            body {
                 grid-template-columns: 1fr;
-                min-height: auto;
-                border-radius: 24px;
+                height: auto;
+                overflow: auto;
             }
 
-            .column-welcome {
-                padding: 40px 30px;
-                order: 2;
+            .login-sidebar {
+                height: auto;
+                border-right: none;
+                border-bottom: 1px solid var(--border);
+                padding: 40px;
             }
 
-            .column-form {
-                padding: 40px 30px;
-                order: 1;
+            .landing-main {
+                height: auto;
+                overflow: visible;
+                padding: 40px 20px;
             }
 
-            .banner-container img {
-                max-height: 220px;
+            .stats-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .charts-grid {
+                grid-template-columns: 1fr;
+            }
+            .welcome-banner {
+                flex-direction: column;
+                gap: 20px;
+                padding: 20px;
+            }
+            .banner-info {
+                max-width: 100%;
+            }
+            .banner-image {
+                height: 100px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
             }
         }
     </style>
 </head>
 <body>
 
-    <div class="bg-glow-1"></div>
-    <div class="bg-glow-2"></div>
+    <!-- Global Loading Overlay -->
+    <div id="globalLoader">
+        <i class="fas fa-sync fa-spin" style="font-size: 3rem; color: var(--sage); margin-bottom: 15px;"></i>
+        <h2 style="color: var(--charcoal); margin-bottom: 5px;">Menghubungkan Database</h2>
+        <p style="color: var(--text-muted);">Sedang mengambil data alumni dari Supabase Cloud...</p>
+    </div>
 
-    <div class="login-container">
+    <!-- ===== SISI KIRI: LOGIN SIDEBAR PANEL ===== -->
+    <aside class="login-sidebar">
+        <!-- Brand Header -->
+        <div class="brand-header">
+            <img src="logo-bkk.png" alt="Logo BKK">
+            <div class="brand-divider"></div>
+            <img src="logo-smk.png" alt="Logo SMK">
+            <div class="brand-title">BKK SMK NU<br>Darussalam</div>
+        </div>
 
-        <!-- ===== COLUMN KANAN: FORM LOGIN ===== -->
-        <div class="column-form">
-            <div class="form-header">
-                <div class="form-eyebrow">Portal Administrasi</div>
-                <h2 class="form-title">Selamat Datang</h2>
-                <p class="form-desc">Silakan masuk menggunakan kredensial admin Anda.</p>
-            </div>
+        <!-- Form Login Minimalis -->
+        <div class="form-section">
+            <h2 class="form-title">Portal Admin</h2>
+            <p class="form-desc">Masukkan kredensial pengelola untuk mengedit database alumni.</p>
 
             <form id="loginForm" onsubmit="handleLogin(event)" autocomplete="off">
                 <!-- Username -->
@@ -559,82 +687,197 @@
                     </div>
                 </div>
 
-                <!-- Error Message -->
+                <!-- Error Box -->
                 <div class="error-message" id="loginError">
                     <i class="fas fa-exclamation-circle"></i>
-                    <span>Username atau password salah. Coba lagi.</span>
+                    <span>Username atau password salah!</span>
                 </div>
 
                 <!-- Submit Button -->
                 <button type="submit" class="btn-login" id="submitBtn">
                     <i class="fas fa-sign-in-alt"></i>
-                    <span>Masuk ke Panel</span>
+                    <span>Masuk Panel Admin</span>
                 </button>
             </form>
 
-            <div class="info-divider">Informasi Keamanan</div>
-
-            <div class="notice-box">
+            <div class="security-notice">
                 <i class="fas fa-shield-alt"></i>
-                <span>Akses ini dibatasi secara khusus untuk tim pengelola BKK SMK NU Darussalam. Semua sesi aktivitas tersimpan secara aman.</span>
+                <span>Akses data sensitif dan manajemen dashboard dibatasi khusus bagi staf BKK SMK NU Darussalam yang berwenang.</span>
             </div>
         </div>
 
-        <!-- ===== COLUMN KIRI: WELCOME BANNER ===== -->
-        <div class="column-welcome">
-            <!-- Header Logos -->
-            <div class="header-logos">
-                <div class="logo-wrapper">
-                    <img src="logo-bkk.png" alt="Logo BKK">
-                    <div class="logo-divider"></div>
-                    <img src="logo-smk.png" alt="Logo SMK NU">
-                    <span class="brand-text">BKK SMK NU Darussalam</span>
-                </div>
+        <!-- Footer -->
+        <div class="sidebar-footer">
+            <span>© 2026 TIM TKJ</span>
+            <div class="server-status">
+                <div class="status-dot"></div>
+                <span>Supabase Live</span>
             </div>
+        </div>
+    </aside>
 
-            <!-- Welcome Middle content -->
-            <div class="welcome-content">
-                <!-- Banner Image (FIXED CROP) -->
-                <div class="banner-container">
-                    <img src="banner.png" alt="BKK SMK NU Darussalam">
-                </div>
-
-                <div class="eyebrow">Sistem Tracer Study</div>
-                <h1 class="welcome-title">
-                    Pusat Informasi &amp;<br>
-                    Karir Alumni <em>SMK NU Darussalam</em>
+    <!-- ===== SISI KANAN: PUBLIC LANDING DASHBOARD ===== -->
+    <main class="landing-main">
+        <!-- Banner Spanduk Selamat Datang -->
+        <section class="welcome-banner">
+            <div class="banner-info">
+                <div class="eyebrow">Tracer Study &amp; Karir</div>
+                <h1 class="banner-title">
+                    Pusat Informasi Karir &amp;<br>
+                    Alumni <em>SMK NU Darussalam</em>
                 </h1>
-                <p class="welcome-desc">
-                    Layanan bursa kerja terpadu untuk pendataan alumni secara dinamis, melacak keterserapan industri, serta penyelarasan lulusan dengan kebutuhan dunia kerja.
+                <p class="banner-desc">
+                    Layanan publik pelacakan keterserapan alumni di dunia industri, perguruan tinggi, maupun wirausaha mandiri secara terintegrasi dan akurat.
                 </p>
             </div>
+            <img src="banner.png" alt="BKK SMK NU" class="banner-image">
+        </section>
 
-            <!-- Footer Welcome -->
-            <div class="welcome-footer">
-                <span>© 2026 TIM TKJ SMK NU Darussalam</span>
-                <div class="status-badge">
-                    <div class="status-dot"></div>
-                    Server Terhubung · v2.0
-                </div>
+        <!-- Section Title & Filter Tahun -->
+        <div class="section-header">
+            <h2 class="section-title"><i class="fas fa-chart-line"></i> Rekapitulasi Data Alumni</h2>
+            <div class="filter-year">
+                <label for="yearFilter" style="font-weight: 600;"><i class="fas fa-filter"></i> Tahun Kelulusan:</label>
+                <select id="yearFilter">
+                    <option value="all">Semua Angkatan</option>
+                    <option value="2027">2027 (Mendatang)</option>
+                    <option value="2026">2026</option>
+                    <option value="2025">2025</option>
+                    <option value="2024">2024</option>
+                    <option value="2023">2023</option>
+                    <option value="2022">2022</option>
+                    <option value="2021">2021</option>
+                    <option value="2020">2020</option>
+                    <option value="2019">2019</option>
+                    <option value="2018">2018</option>
+                    <option value="2017">2017</option>
+                </select>
             </div>
         </div>
 
-    </div>
+        <!-- Metrics Cards Grid -->
+        <section class="stats-grid">
+            <!-- Total Alumni -->
+            <div class="stat-card">
+                <div class="stat-icon" style="background-color: rgba(92, 117, 90, 0.1); color: var(--sage-dark);">
+                    <i class="fas fa-graduation-cap"></i>
+                </div>
+                <div class="stat-info">
+                    <h3>Total Lulusan</h3>
+                    <p id="statTotal">0</p>
+                </div>
+            </div>
+            <!-- Bekerja -->
+            <div class="stat-card">
+                <div class="stat-icon" style="background-color: rgba(46, 204, 113, 0.1); color: #2ecc71;">
+                    <i class="fas fa-briefcase"></i>
+                </div>
+                <div class="stat-info">
+                    <h3>Bekerja</h3>
+                    <p id="statKerja" style="color: #27ae60;">0</p>
+                </div>
+            </div>
+            <!-- Kuliah -->
+            <div class="stat-card">
+                <div class="stat-icon" style="background-color: rgba(52, 152, 219, 0.1); color: #3498db;">
+                    <i class="fas fa-university"></i>
+                </div>
+                <div class="stat-info">
+                    <h3>Studi Lanjut</h3>
+                    <p id="statKuliah" style="color: #2980b9;">0</p>
+                </div>
+            </div>
+            <!-- Wirausaha -->
+            <div class="stat-card">
+                <div class="stat-icon" style="background-color: rgba(241, 196, 15, 0.1); color: #f1c40f;">
+                    <i class="fas fa-store"></i>
+                </div>
+                <div class="stat-info">
+                    <h3>Wirausaha</h3>
+                    <p id="statUsaha" style="color: #f39c12;">0</p>
+                </div>
+            </div>
+            <!-- Belum Bekerja -->
+            <div class="stat-card">
+                <div class="stat-icon" style="background-color: rgba(231, 76, 60, 0.1); color: #e74c3c;">
+                    <i class="fas fa-user-clock"></i>
+                </div>
+                <div class="stat-info">
+                    <h3>Mencari Kerja</h3>
+                    <p id="statBelum" style="color: #c0392b;">0</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Charts Grid Layout -->
+        <section class="charts-grid">
+            <!-- Doughnut: Status -->
+            <div class="chart-box">
+                <h3><i class="fas fa-chart-pie"></i> Distribusi Status Alumni</h3>
+                <div class="chart-container">
+                    <canvas id="statusChart"></canvas>
+                </div>
+            </div>
+            <!-- Bar: Jurusan -->
+            <div class="chart-box">
+                <h3><i class="fas fa-chart-bar"></i> Tren Lulusan Per Jurusan (TKJ, AKL, TKR)</h3>
+                <div class="chart-container">
+                    <canvas id="majorTrendChart"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <!-- Search Bar Section Publik (Read Only) -->
+        <section class="search-section">
+            <div class="search-header">
+                <h3 class="search-title"><i class="fas fa-search"></i> Cari Status Tracer Alumni</h3>
+                <p class="search-desc">Masukkan nama lengkap alumni di bawah ini untuk melihat tahun lulus, jurusan, dan status penempatan karirnya secara mandiri.</p>
+            </div>
+            <div class="search-bar">
+                <div class="search-input-wrapper">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="searchAlumni" class="search-field" placeholder="Masukkan nama alumni yang dicari...">
+                </div>
+                <button class="btn-search" onclick="searchAlumniData()">Cari Nama</button>
+            </div>
+            <!-- Table Container -->
+            <div id="searchResults" class="search-results">
+                <table class="results-table">
+                    <thead>
+                        <tr>
+                            <th>Nama Lengkap</th>
+                            <th>Angkatan</th>
+                            <th>Status Kerja / Studi</th>
+                            <th>Instansi / Keterangan</th>
+                        </tr>
+                    </thead>
+                    <tbody id="searchTableBody">
+                        <!-- Diisi otomatis oleh JS -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+
+    <!-- Supabase SDK -->
+    <script src="js/supabase.js"></script>
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Global JS (Auth check, dsb) -->
+    <script src="js/main.js"></script>
 
     <script>
-        // Clear session on login page
+        // Clear session on login page load
         sessionStorage.removeItem('role');
 
-        // =====================================================
-        // CONFIG & FALLBACK CREDENTIALS (Untuk Offline/Failover)
-        // =====================================================
-        const GAS_API = "https://script.google.com/macros/s/AKfycbxOHqXzXHPxP6CjPnp5TwVeyho7IPb21NUeE5uqORUDsTh0MAvO7D8b1C8zn68anlVU/exec";
-        
         const OFFLINE_USERS = [
             { username: 'admin', password: 'bkknuda2026', name: 'Admin Utama BKK' },
             { username: 'bkk',   password: 'smknuda',     name: 'Staf BKK' }
         ];
 
+        // =====================================================
+        // AUTHENTICATION LOGIN HANDLER
+        // =====================================================
         async function handleLogin(e) {
             e.preventDefault();
             const uname = document.getElementById('username').value.trim();
@@ -642,7 +885,7 @@
             const err   = document.getElementById('loginError');
             const btn   = document.getElementById('submitBtn');
 
-            // Show loading animation on button
+            // Set Loading state
             const originalBtnHTML = btn.innerHTML;
             btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i><span>Memverifikasi...</span>';
             btn.style.pointerEvents = 'none';
@@ -652,39 +895,27 @@
             let loggedInUser = null;
 
             try {
-                // Tembak API Supabase secara Asinkron
-                const { data: users, error } = await supabase
-                    .from('users')
-                    .select('*');
-                
+                if (!supabase) throw new Error("Supabase SDK gagal dimuat");
+                const { data: users, error } = await supabase.from('users').select('*');
                 if (error) throw error;
                 
                 if (users && users.length > 0) {
-                    // Cari kecocokan di database Cloud (Supabase)
                     loggedInUser = users.find(u => u.username === uname && u.password === pwd);
-                    if (loggedInUser) {
-                        authenticated = true;
-                    }
+                    if (loggedInUser) authenticated = true;
                 }
             } catch (error) {
                 console.warn("Koneksi Supabase gagal, menggunakan offline fallback credentials:", error);
-                // Fallback ke kredensial offline jika koneksi internet terputus
                 loggedInUser = OFFLINE_USERS.find(u => u.username === uname && u.password === pwd);
-                if (loggedInUser) {
-                    authenticated = true;
-                }
+                if (loggedInUser) authenticated = true;
             }
 
             if (authenticated) {
-                // Set sesi peran & simpan nama profil terpilih
                 sessionStorage.setItem('role', 'admin');
                 localStorage.setItem('adminName', loggedInUser.name || 'Administrator');
-                
                 setTimeout(() => {
                     window.location.replace('admin_dashboard.html');
                 }, 500);
             } else {
-                // Login gagal: Tampilkan error shake & kembalikan button
                 btn.innerHTML = originalBtnHTML;
                 btn.style.pointerEvents = 'auto';
                 void err.offsetWidth; // Force Reflow
@@ -705,12 +936,274 @@
                 icon.className = 'fas fa-eye';
             }
         }
-    </script>
 
-    <!-- Supabase SDK CDN -->
-    <script src="js/supabase.js"></script>
-    <!-- Custom JS -->
-    <script src="js/main.js"></script>
+        // =====================================================
+        // PUBLIC STATISTICAL FETCH & GRAPH RENDERING
+        // =====================================================
+        let statusChartObj = null;
+        let trendChartObj = null;
+
+        window.onload = function () {
+            const yearFilter = document.getElementById('yearFilter');
+            if (yearFilter) {
+                yearFilter.addEventListener('change', function (e) {
+                    if (window._alumniDataCache) {
+                        loadPublicDashboardData(e.target.value, window._alumniDataCache);
+                    }
+                });
+            }
+
+            if (!supabase) {
+                console.warn("Supabase SDK gagal dimuat. Menjalankan fallback offline...");
+                document.getElementById('globalLoader').style.display = 'none';
+                
+                let offlineData = [];
+                try {
+                    const saved = localStorage.getItem('alumniData');
+                    if (saved) offlineData = JSON.parse(saved);
+                } catch(err) {}
+                window._alumniDataCache = offlineData;
+                loadPublicDashboardData('all', offlineData);
+                return;
+            }
+
+            // Fetch data alumni
+            supabase.from('alumni').select('*')
+                .then(({ data: cloudData, error }) => {
+                    if (error) throw error;
+                    document.getElementById('globalLoader').style.display = 'none';
+
+                    // Normalisasi kolom ke UPPERCASE
+                    const normalized = (cloudData || []).map(row => {
+                        const newRow = {};
+                        for (let key in row) {
+                            newRow[key.toUpperCase()] = row[key];
+                        }
+                        return newRow;
+                    });
+
+                    window._alumniDataCache = normalized;
+                    localStorage.setItem('alumniData', JSON.stringify(normalized));
+                    loadPublicDashboardData('all', normalized);
+                })
+                .catch(e => {
+                    console.warn("Gagal koneksi ke Supabase:", e);
+                    document.getElementById('globalLoader').style.display = 'none';
+                    
+                    let offlineData = [];
+                    try {
+                        const saved = localStorage.getItem('alumniData');
+                        if (saved) offlineData = JSON.parse(saved);
+                    } catch(err) {}
+                    window._alumniDataCache = offlineData;
+                    loadPublicDashboardData('all', offlineData);
+                });
+        };
+
+        function loadPublicDashboardData(filterYear, dataSource) {
+            let dataArray = dataSource || window._alumniDataCache || [];
+
+            let total = 0, bekerja = 0, kuliah = 0, wirausaha = 0, belumBekerja = 0;
+            let yearCounts = {};
+            let majorCountsByYear = {};
+
+            for (let y = 2017; y <= 2027; y++) {
+                yearCounts[y] = { total: 0, bekerja: 0, kuliah: 0, wirausaha: 0, belum: 0 };
+                majorCountsByYear[y] = { tkj: 0, akl: 0, tkr: 0, total: 0 };
+            }
+
+            dataArray.forEach(row => {
+                let status = (row['STATUS_UTAMA'] || row['STATUS'] || row['Status'] || row['status'] || '').toLowerCase();
+                let year = parseInt(row['TAHUN_LULUS'] || row['Tahun Lulus'] || row['Angkatan']) || 0;
+
+                let isKerja = false, isKuliah = false, isUsaha = false, isBelum = false;
+
+                if (status.includes('tidak') || status.includes('mencari')) {
+                    isBelum = true;
+                } else if (status.includes('studi') && !status.includes('bekerja') && !status.includes('usaha')) {
+                    isKuliah = true;
+                } else if (status.includes('usaha')) {
+                    isUsaha = true;
+                } else if (status.includes('kerja') || status.includes('bekerja')) {
+                    isKerja = true;
+                } else if (status.includes('kuliah')) {
+                    isKuliah = true;
+                } else {
+                    isBelum = true;
+                }
+
+                if (yearCounts[year]) {
+                    yearCounts[year].total++;
+                    if (isKerja) yearCounts[year].bekerja++;
+                    if (isKuliah) yearCounts[year].kuliah++;
+                    if (isUsaha) yearCounts[year].wirausaha++;
+                    if (isBelum) yearCounts[year].belum++;
+                }
+
+                if (majorCountsByYear[year]) {
+                    let major = (row['KOMPETENSI_KEAHLIAN'] || row['KOMPETENSI'] || row['Jurusan'] || '').toLowerCase();
+                    if (major.includes('tkj') || major.includes('komputer')) {
+                        majorCountsByYear[year].tkj++;
+                        majorCountsByYear[year].total++;
+                    } else if (major.includes('akuntansi') || major.includes('akl')) {
+                        majorCountsByYear[year].akl++;
+                        majorCountsByYear[year].total++;
+                    } else if (major.includes('kendaraan') || major.includes('tkr')) {
+                        majorCountsByYear[year].tkr++;
+                        majorCountsByYear[year].total++;
+                    }
+                }
+
+                if (filterYear !== 'all' && year !== parseInt(filterYear)) {
+                    return;
+                }
+
+                total++;
+                if (isKerja) bekerja++;
+                if (isKuliah) kuliah++;
+                if (isUsaha) wirausaha++;
+                if (isBelum) belumBekerja++;
+            });
+
+            // Update DOM Cards
+            document.getElementById('statTotal').innerText = total.toLocaleString('id-ID');
+            document.getElementById('statKerja').innerText = bekerja.toLocaleString('id-ID');
+            document.getElementById('statKuliah').innerText = kuliah.toLocaleString('id-ID');
+            document.getElementById('statUsaha').innerText = wirausaha.toLocaleString('id-ID');
+            document.getElementById('statBelum').innerText = belumBekerja.toLocaleString('id-ID');
+
+            // Draw Charts
+            updatePublicCharts(bekerja, kuliah, wirausaha, belumBekerja, yearCounts, majorCountsByYear);
+        }
+
+        function updatePublicCharts(bekerja, kuliah, wirausaha, belum, yearCounts, majorCountsByYear) {
+            const sumStatus = bekerja + kuliah + wirausaha + belum;
+            const statusLabels = sumStatus === 0 ? ['Tidak Ada Data'] : ['Bekerja', 'Studi Lanjut', 'Wirausaha', 'Mencari Kerja'];
+            const statusData = sumStatus === 0 ? [1] : [bekerja, kuliah, wirausaha, belum];
+            const statusColors = sumStatus === 0 ? ['#e0e0e0'] : ['#2ecc71', '#3498db', '#f1c40f', '#e74c3c'];
+
+            // Status Chart
+            const ctxStatus = document.getElementById('statusChart').getContext('2d');
+            if (statusChartObj) statusChartObj.destroy();
+            statusChartObj = new Chart(ctxStatus, {
+                type: 'doughnut',
+                data: {
+                    labels: statusLabels,
+                    datasets: [{
+                        data: statusData,
+                        backgroundColor: statusColors,
+                        borderWidth: 0,
+                        hoverOffset: 10
+                    }]
+                },
+                options: {
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'bottom', labels: { boxWidth: 12, font: { size: 10 } } }
+                    },
+                    cutout: '70%'
+                }
+            });
+
+            // Trend Chart
+            const years = [];
+            const tkjData = [];
+            const aklData = [];
+            const tkrData = [];
+
+            for (let y = 2017; y <= 2026; y++) {
+                years.push(y);
+                tkjData.push(majorCountsByYear[y].tkj);
+                aklData.push(majorCountsByYear[y].akl);
+                tkrData.push(majorCountsByYear[y].tkr);
+            }
+
+            const ctxTrend = document.getElementById('majorTrendChart').getContext('2d');
+            if (trendChartObj) trendChartObj.destroy();
+            trendChartObj = new Chart(ctxTrend, {
+                type: 'bar',
+                data: {
+                    labels: years,
+                    datasets: [
+                        { label: 'TKJ', data: tkjData, backgroundColor: '#3498db' },
+                        { label: 'AKL', data: aklData, backgroundColor: '#2ecc71' },
+                        { label: 'TKR', data: tkrData, backgroundColor: '#e67e22' }
+                    ]
+                },
+                options: {
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: { beginAtZero: true, grid: { display: false } },
+                        x: { grid: { display: false } }
+                    },
+                    plugins: {
+                        legend: { position: 'bottom', labels: { boxWidth: 12, font: { size: 10 } } }
+                    }
+                }
+            });
+        }
+
+        // =====================================================
+        // PUBLIC SEARCH ALUMNI HANDLER
+        // =====================================================
+        function searchAlumniData() {
+            const searchVal = document.getElementById('searchAlumni').value.trim().toLowerCase();
+            const resultsContainer = document.getElementById('searchResults');
+            const tbody = document.getElementById('searchTableBody');
+
+            if (!searchVal) {
+                resultsContainer.style.display = 'none';
+                return;
+            }
+
+            const savedData = localStorage.getItem('alumniData');
+            if (!savedData) return;
+
+            let dataArray = [];
+            try { dataArray = JSON.parse(savedData); } catch (e) { }
+
+            const results = dataArray.filter(row => {
+                let nama = (row['NAMA_LENGKAP'] || row['Nama Lengkap'] || row['NAMA'] || '').toLowerCase();
+                return nama.includes(searchVal);
+            });
+
+            if (results.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="4" style="padding: 15px; text-align: center; color: var(--text-muted);">Tidak ada alumni dengan nama tersebut.</td></tr>`;
+            } else {
+                let html = '';
+                results.forEach(row => {
+                    let nama = row['NAMA_LENGKAP'] || row['Nama Lengkap'] || row['NAMA'] || '-';
+                    let tahun = row['TAHUN_LULUS'] || row['Tahun Lulus'] || row['Angkatan'] || '-';
+                    let jurusan = row['KOMPETENSI_KEAHLIAN'] || row['KOMPETENSI'] || row['Jurusan'] || '-';
+                    let status = row['STATUS_UTAMA'] || row['STATUS'] || row['Status'] || row['status'] || '-';
+                    let tempat = row['NAMA_TEMPAT_KERJA'] || row['NAMA_KAMPUS_PERUSAHAAN'] || row['Nama Tempat Kerja'] || row['JABATAN_PEKERJAAN'] || '-';
+
+                    let statusBadge = '';
+                    if (status.toLowerCase().includes('kerja')) statusBadge = '<span style="background: rgba(46, 204, 113, 0.12); color: #27ae60; padding: 3px 8px; border-radius: 20px; font-weight: bold;">Bekerja</span>';
+                    else if (status.toLowerCase().includes('kuliah') || status.toLowerCase().includes('studi')) statusBadge = '<span style="background: rgba(52, 152, 219, 0.12); color: #2980b9; padding: 3px 8px; border-radius: 20px; font-weight: bold;">Studi Lanjut</span>';
+                    else if (status.toLowerCase().includes('usaha')) statusBadge = '<span style="background: rgba(241, 196, 15, 0.12); color: #f39c12; padding: 3px 8px; border-radius: 20px; font-weight: bold;">Wirausaha</span>';
+                    else statusBadge = `<span style="color: var(--text-muted);">${status}</span>`;
+
+                    html += `
+                    <tr>
+                        <td style="font-weight: 600; color: var(--charcoal);">${nama}</td>
+                        <td>${tahun} <br> <span style="font-size: 0.72rem; color: var(--text-muted);">${jurusan}</span></td>
+                        <td>${statusBadge}</td>
+                        <td>${tempat}</td>
+                    </tr>`;
+                });
+                tbody.innerHTML = html;
+            }
+            resultsContainer.style.display = 'block';
+        }
+
+        // Trigger search on Enter key press
+        document.getElementById('searchAlumni').addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') {
+                searchAlumniData();
+            }
+        });
+    </script>
 
 </body>
 </html>

@@ -25,27 +25,30 @@
         })();
     </script>
     <style>
+        .print-only-header {
+            display: none;
+        }
+
         @media print {
             body {
                 background: white !important;
                 color: black !important;
                 zoom: 1 !important;
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+
+            .print-only-header {
+                display: block !important;
             }
 
             .sidebar,
             .header,
             button[onclick="downloadDashboardPDF()"],
-            .filter-year {
-                display: none !important;
-            }
-
-            /* Menyembunyikan elemen pencarian saat di-print */
+            .filter-year,
             #searchAlumni,
             button[onclick="searchAlumniData()"],
-            #searchResults {
-                display: none !important;
-            }
-
+            #searchResults,
             .fa-search,
             input[placeholder="Cari nama alumni..."] {
                 display: none !important;
@@ -54,7 +57,7 @@
             /* Mengatur ulang padding untuk menjaga margin saat dicetak */
             .main-content {
                 margin-left: 0 !important;
-                padding: 10mm !important;
+                padding: 5mm !important;
                 width: 100% !important;
                 box-sizing: border-box;
             }
@@ -77,22 +80,25 @@
                 box-shadow: none !important;
                 page-break-inside: avoid;
                 padding: 10px !important;
+                background-color: var(--white) !important;
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
             }
 
             .stat-icon {
-                width: 35px !important;
-                height: 35px !important;
-                font-size: 16px !important;
-                margin-right: 10px !important;
+                width: 30px !important;
+                height: 30px !important;
+                font-size: 14px !important;
+                margin-right: 8px !important;
             }
 
             .stat-info h3 {
-                font-size: 0.8rem !important;
+                font-size: 0.75rem !important;
                 margin-bottom: 2px !important;
             }
 
             .stat-info p {
-                font-size: 1.2rem !important;
+                font-size: 1.1rem !important;
             }
 
             /* Menata Container Tabel & Chart */
@@ -102,18 +108,21 @@
                 page-break-inside: avoid;
                 margin-bottom: 10px !important;
                 padding: 10px !important;
+                background-color: var(--white) !important;
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
             }
 
             /* Paksa Grid Bersebelahan Kiri-Kanan */
             div[style*="grid-template-columns: repeat(auto-fit, minmax(280px, 1fr))"] {
                 grid-template-columns: 1fr 1fr !important;
-                gap: 10px !important;
+                gap: 15px !important;
                 margin-top: 15px !important;
             }
 
             div[style*="grid-template-columns: repeat(auto-fit, minmax(400px, 1fr))"] {
                 grid-template-columns: 1fr 1fr !important;
-                gap: 10px !important;
+                gap: 15px !important;
                 margin-top: 15px !important;
                 margin-bottom: 15px !important;
             }
@@ -126,18 +135,19 @@
 
             /* Tipografi & Padding Tabel Print */
             h2 {
-                font-size: 1rem !important;
+                font-size: 0.95rem !important;
                 margin-top: 5px !important;
                 margin-bottom: 5px !important;
             }
 
             h3 {
-                font-size: 0.9rem !important;
+                font-size: 0.85rem !important;
                 margin-bottom: 5px !important;
             }
 
             table {
-                font-size: 0.75rem !important;
+                font-size: 0.72rem !important;
+                width: 100% !important;
             }
 
             .recap-table th,
@@ -145,10 +155,15 @@
             table th,
             table td {
                 padding: 4px 6px !important;
+                border: 1px solid #ccc !important;
+            }
+
+            tr {
+                page-break-inside: avoid !important;
             }
 
             @page {
-                margin: 10mm;
+                margin: 8mm;
                 size: A4 landscape;
             }
         }
@@ -306,6 +321,24 @@
             </div>
 
             <div id="printArea">
+                <!-- Kop Surat Resmi Cetak Laporan (Hanya Muncul saat Cetak/Print) -->
+                <div class="print-only-header">
+                    <table style="width: 100%; border-collapse: collapse; border-bottom: 3px double var(--primary-dark); margin-bottom: 20px; font-size: 0.9rem; text-align: left;">
+                        <tr>
+                            <td style="width: 80px; padding-bottom: 15px; border: none;">
+                                <img src="logo-smk.png" alt="Logo SMK" style="height: 65px; width: auto; display: block; margin: 0 auto;">
+                            </td>
+                            <td style="text-align: center; padding-bottom: 15px; border: none; font-family: 'Plus Jakarta Sans', sans-serif;">
+                                <h2 style="font-size: 1.25rem; font-weight: 700; letter-spacing: 0.05em; color: var(--charcoal); margin: 0; text-transform: uppercase;">BURSA KERJA KHUSUS (BKK)</h2>
+                                <h1 style="font-family: 'Cormorant Garamond', serif; font-size: 1.8rem; font-weight: 700; line-height: 1.1; margin: 2px 0; color: var(--primary-dark);">SMK NU DARUSSALAM</h1>
+                                <p style="font-size: 0.72rem; color: var(--text-muted); margin: 0;">Layanan Penyelarasan Alumni & Tracer Study Terintegrasi</p>
+                            </td>
+                            <td style="width: 80px; padding-bottom: 15px; border: none;">
+                                <img src="logo-bkk.png" alt="Logo BKK" style="height: 65px; width: auto; display: block; margin: 0 auto;">
+                            </td>
+                        </tr>
+                    </table>
+                </div>
                 <div class="stats-grid">
                     <div class="stat-card">
                         <div class="stat-icon"><i class="fas fa-users"></i></div>
