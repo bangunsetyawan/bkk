@@ -267,81 +267,110 @@
         }
 
         .welcome-banner {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            background: linear-gradient(135deg, #e4ede3 0%, var(--warm-cream) 100%);
-            border: 1px solid var(--border);
+            background: linear-gradient(135deg, var(--sage-dark) 0%, var(--charcoal) 100%);
+            color: var(--pure-white);
             border-radius: 24px;
-            padding: 30px 40px;
+            padding: 35px 40px;
+            box-shadow: 0 15px 35px rgba(62, 82, 61, 0.15);
+            display: grid;
+            grid-template-columns: 1.5fr 1fr;
+            gap: 30px;
             position: relative;
             overflow: hidden;
-            box-shadow: var(--shadow);
+            border: 1px solid rgba(255, 255, 255, 0.08);
         }
 
         .welcome-banner::before {
             content: '';
             position: absolute;
-            top: -50px;
-            right: -50px;
-            width: 180px;
-            height: 180px;
-            background: radial-gradient(circle, rgba(197,168,128,0.12) 0%, transparent 70%);
+            top: -100px;
+            right: -100px;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(197, 168, 128, 0.15) 0%, transparent 70%);
             pointer-events: none;
         }
 
-        .banner-info {
-            max-width: 60%;
-        }
-
-        .eyebrow {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            font-size: 0.72rem;
-            font-weight: 700;
-            letter-spacing: 0.1em;
-            text-transform: uppercase;
-            color: var(--gold-accent);
-            margin-bottom: 8px;
-        }
-
-        .eyebrow::after {
-            content: '';
-            display: block;
-            width: 25px;
-            height: 1.5px;
-            background-color: var(--gold-accent);
-        }
-
-        .banner-title {
+        .banner-main h1 {
             font-family: 'Cormorant Garamond', serif;
-            font-size: 2.2rem;
+            font-size: 2.3rem;
             font-weight: 700;
             line-height: 1.2;
+            margin-bottom: 12px;
+            color: var(--pure-white);
+        }
+
+        .banner-main h1 span {
+            color: var(--gold-accent);
+        }
+
+        .banner-badge {
+            display: inline-block;
+            background-color: var(--gold-accent);
             color: var(--charcoal);
-            margin-bottom: 10px;
+            font-size: 0.72rem;
+            font-weight: 700;
+            padding: 4px 12px;
+            border-radius: 20px;
+            margin-bottom: 20px;
+            letter-spacing: 0.05em;
         }
 
-        .banner-title em {
-            font-style: italic;
-            font-weight: 400;
-            color: var(--sage-dark);
+        .banner-contacts {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-top: 15px;
+            font-size: 0.85rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.12);
+            padding-top: 15px;
         }
 
-        .banner-desc {
-            font-size: 0.9rem;
-            line-height: 1.6;
-            color: var(--text-muted);
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
 
-        .banner-image {
-            height: 150px;
-            width: auto;
-            object-fit: contain;
-            border-radius: 12px;
-            border: 3px solid var(--pure-white);
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.05);
+        .contact-item i {
+            color: var(--gold-accent);
+        }
+
+        .banner-services {
+            background: rgba(255, 255, 255, 0.04);
+            border-left: 3px solid var(--gold-accent);
+            padding: 20px;
+            border-radius: 0 12px 12px 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 12px;
+        }
+
+        .service-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.88rem;
+            font-weight: 500;
+        }
+
+        .service-item i {
+            color: var(--gold-accent);
+            font-size: 0.95rem;
+        }
+
+        @media (max-width: 992px) {
+            .welcome-banner {
+                grid-template-columns: 1fr;
+                padding: 25px;
+            }
+            .banner-services {
+                border-left: none;
+                border-top: 3px solid var(--gold-accent);
+                border-radius: 0 0 12px 12px;
+                padding-top: 20px;
+            }
         }
 
         /* Stats Grid */
@@ -622,15 +651,8 @@
                 grid-template-columns: 1fr;
             }
             .welcome-banner {
-                flex-direction: column;
-                gap: 20px;
                 padding: 20px;
-            }
-            .banner-info {
-                max-width: 100%;
-            }
-            .banner-image {
-                height: 100px;
+                gap: 15px;
             }
         }
 
@@ -638,6 +660,11 @@
             .stats-grid {
                 grid-template-columns: 1fr;
             }
+        }
+
+        .social-footer-bar a:hover {
+            color: var(--sage) !important;
+            text-decoration: underline;
         }
     </style>
 </head>
@@ -720,17 +747,41 @@
     <main class="landing-main">
         <!-- Banner Spanduk Selamat Datang -->
         <section class="welcome-banner">
-            <div class="banner-info">
-                <div class="eyebrow">Tracer Study &amp; Karir</div>
-                <h1 class="banner-title">
-                    Pusat Informasi Karir &amp;<br>
-                    Alumni <em>SMK NU Darussalam</em>
-                </h1>
-                <p class="banner-desc">
-                    Layanan publik pelacakan keterserapan alumni di dunia industri, perguruan tinggi, maupun wirausaha mandiri secara terintegrasi dan akurat.
-                </p>
+            <div class="banner-main">
+                <div class="eyebrow" style="color: var(--gold-accent);">Bursa Kerja Khusus (BKK)</div>
+                <h1>Pusat Informasi Kerja &amp;<br>Pelayanan Alumni <span>SMK NU Darussalam</span></h1>
+                <div class="banner-badge">No. Tanda Daftar: SK.560/446/429.106/2025</div>
+                
+                <div class="banner-contacts">
+                    <div class="contact-item">
+                        <i class="fas fa-clock"></i>
+                        <span>Layanan: 08.00 - 11.00 WIB</span>
+                    </div>
+                    <div class="contact-item">
+                        <i class="fab fa-whatsapp"></i>
+                        <span>Call Center: 0838-3028-3379 / 0853-3435-4102</span>
+                    </div>
+                </div>
             </div>
-            <img src="banner.png" alt="BKK SMK NU" class="banner-image">
+            
+            <div class="banner-services">
+                <div class="service-item">
+                    <i class="fas fa-check-circle"></i>
+                    <span>Informasi Lowongan Kerja</span>
+                </div>
+                <div class="service-item">
+                    <i class="fas fa-check-circle"></i>
+                    <span>Rekrutmen &amp; Penempatan Kerja</span>
+                </div>
+                <div class="service-item">
+                    <i class="fas fa-check-circle"></i>
+                    <span>Bimbingan Karier &amp; Minat Bakat</span>
+                </div>
+                <div class="service-item">
+                    <i class="fas fa-check-circle"></i>
+                    <span>Pengembangan Kewirausahaan</span>
+                </div>
+            </div>
         </section>
 
         <!-- Section Title & Filter Tahun -->
@@ -857,6 +908,14 @@
                 </table>
             </div>
         </section>
+
+        <!-- Social Media Footer Bar (Dari banner.png) -->
+        <div class="social-footer-bar" style="display: flex; justify-content: center; gap: 25px; flex-wrap: wrap; margin-top: 30px; padding-top: 20px; border-top: 1px solid var(--border); font-size: 0.82rem; color: var(--text-muted);">
+            <a href="https://instagram.com/smknudarussalamsrono" target="_blank" style="color: var(--text-muted); display: flex; align-items: center; gap: 6px; transition: color 0.2s;"><i class="fab fa-instagram" style="color: #e1306c;"></i> @smknudarussalamsrono</a>
+            <a href="https://instagram.com/bkk_smknuda" target="_blank" style="color: var(--text-muted); display: flex; align-items: center; gap: 6px; transition: color 0.2s;"><i class="fab fa-instagram" style="color: #e1306c;"></i> @bkk_smknuda</a>
+            <a href="https://tiktok.com/@smknudarussalam" target="_blank" style="color: var(--text-muted); display: flex; align-items: center; gap: 6px; transition: color 0.2s;"><i class="fab fa-tiktok" style="color: #000;"></i> smknudarussalam</a>
+            <a href="mailto:bkksmknudarussalam@gmail.com" style="color: var(--text-muted); display: flex; align-items: center; gap: 6px; transition: color 0.2s;"><i class="fas fa-envelope" style="color: var(--sage);"></i> bkksmknudarussalam@gmail.com</a>
+        </div>
     </main>
 
     <!-- Supabase SDK -->
