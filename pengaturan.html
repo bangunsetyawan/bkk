@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=1200">
+    <title>Pengaturan Sistem - BKK SMK NU Darussalam</title>
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/styles.css">
+    <!-- ZOOM 75% INLINE -->
+    <script>
+        (function(){
+            if (navigator.userAgent.toLowerCase().indexOf('firefox') > -1) {
+                document.documentElement.style.transform = 'scale(0.75)';
+                document.documentElement.style.transformOrigin = 'top left';
+                document.documentElement.style.width = '133.333vw';
+            } else {
+                document.documentElement.style.zoom = '0.75';
+            }
+        })();
+    </script>
+    <style>
+        .settings-card {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: var(--shadow);
+            margin-bottom: 30px;
+        }
+        .settings-card h2 {
+            margin-bottom: 20px;
+            color: var(--primary-dark);
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 10px;
+            font-size: 1.3rem;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #495057;
+        }
+        .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            box-sizing: border-box;
+            font-family: inherit;
+        }
+        .form-control:focus {
+            border-color: var(--primary);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(46, 204, 113, 0.1);
+        }
+        .danger-zone {
+            border: 1px solid #f5c6cb;
+            background-color: #fcf2f2;
+        }
+        .danger-zone h2 {
+            color: #e74c3c;
+            border-bottom-color: #f5c6cb;
+        }
+        .btn-danger {
+            background-color: #e74c3c;
+            color: white;
+            border: none;
+        }
+        .btn-danger:hover {
+            background-color: #c0392b;
+        }
+    </style>
+    <!-- ZOOM 75% - Inline Script, tidak terpengaruh cache -->
+    <script>
+        (function(){
+            var ua = navigator.userAgent.toLowerCase();
+            if (ua.indexOf('firefox') > -1) {
+                // Firefox: gunakan transform
+                document.documentElement.style.transform = 'scale(0.75)';
+                document.documentElement.style.transformOrigin = 'top left';
+                document.documentElement.style.width = '133.333vw';
+            } else {
+                // Chrome, Edge, Safari: gunakan zoom
+                document.documentElement.style.zoom = '0.75';
+            }
+        })();
+    </script>
+</head>
+<body>
+
+    <div class="dashboard">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-brand">
+                <img src="logo-bkk.png" alt="BKK" style="height: 30px; margin-right: 5px;">
+                <span style="font-size: 0.92rem; font-weight: 800;">BKK SMK NU Darussalam</span>
+            </div>
+            <div class="sidebar-menu">
+                <div class="nav-title">Menu Utama</div>
+                <a href="admin_dashboard.html" class="nav-item">
+                    <i class="fas fa-home"></i><span>Home Dashboard</span>
+                </a>
+                
+                <div class="nav-title" style="margin-top: 20px;">Manajemen Data</div>
+                <a href="data_alumni.html" class="nav-item">
+                    <i class="fas fa-users"></i><span>Data Alumni</span>
+                </a>
+                <a href="mitra_industri.html" class="nav-item">
+                    <i class="fas fa-building"></i><span>Mitra Industri</span>
+                </a>
+                <a href="mou_iduka.html" class="nav-item">
+                    <i class="fas fa-handshake"></i><span>MOU IDUKA</span>
+                </a>
+                <a href="kunjungan_industri.html" class="nav-item">
+                    <i class="fas fa-truck"></i><span>Kunjungan Industri</span>
+                </a>
+                
+                <div class="nav-title" style="margin-top: 20px;">Sistem</div>
+                <a href="pengaturan.html" class="nav-item active">
+                    <i class="fas fa-cog"></i><span>Pengaturan</span>
+                </a>
+            </div>
+            <div class="sidebar-footer">
+                <a href="index.html" class="nav-item" style="color: #e74c3c;">
+                    <i class="fas fa-sign-out-alt"></i><span>Logout</span>
+                </a>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Header -->
+            <header class="header">
+                <button class="header-toggle" id="sidebarToggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <div style="flex-grow: 1;"></div>
+                <div class="header-user">
+                    <span id="displayAdminName">Admin BKK SMK NU Darussalam</span>
+                    <div class="avatar" id="displayAdminInitials">A</div>
+                </div>
+            </header>
+
+            <!-- Content Area -->
+            <div class="content-area" style="max-width: 800px; margin: 0 auto;">
+                <div style="margin-bottom: 25px;">
+                    <h1 class="page-title" style="margin-bottom: 10px;">Pengaturan Sistem</h1>
+                    <p style="color: var(--text-muted);">Kelola profil admin dan bersihkan basis data lokal aplikasi.</p>
+                </div>
+
+                <!-- Pengaturan Profil -->
+                <div class="settings-card">
+                    <h2><i class="fas fa-user-circle"></i> Profil Administrator</h2>
+                    <div class="form-group">
+                        <label for="adminName">Nama Tampilan Admin</label>
+                        <input type="text" id="adminName" class="form-control" placeholder="Contoh: Admin BKK">
+                        <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 5px;">Nama ini akan muncul di pojok kanan atas aplikasi.</p>
+                    </div>
+                    <button class="btn btn-primary" onclick="saveProfile()" id="btnSaveProfile" style="padding: 10px 20px;">
+                        <i class="fas fa-save"></i> Simpan Profil
+                    </button>
+                </div>
+
+                <!-- Manajemen Pengguna -->
+                <div class="settings-card">
+                    <h2><i class="fas fa-users-cog"></i> Manajemen Pengguna (Login)</h2>
+                    <p style="color: var(--text-muted); margin-bottom: 15px;">Kelola akun yang bisa mengakses sistem Dasbor BKK secara real-time. (Tersimpan di Cloud Server Google Sheets)</p>
+                    
+                    <div style="overflow-x: auto; margin-bottom: 15px;">
+                        <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.95rem;">
+                            <thead>
+                                <tr style="background-color: var(--primary-bg); color: var(--primary-dark);">
+                                    <th style="padding: 12px; border-bottom: 2px solid var(--border);">Username</th>
+                                    <th style="padding: 12px; border-bottom: 2px solid var(--border);">Nama Pengguna</th>
+                                    <th style="padding: 12px; border-bottom: 2px solid var(--border); text-align: center;">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody id="userTableBody">
+                                <!-- Data User diisi oleh JS -->
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <button class="btn btn-primary" onclick="showUserForm(-1)" style="padding: 10px 20px; font-size: 0.95rem;">
+                        <i class="fas fa-user-plus"></i> Tambah Pengguna
+                    </button>
+
+                    <!-- Form Inline Tambah/Edit User -->
+                    <div id="userFormArea" style="display: none; background: #f8f9fa; padding: 20px; border-radius: 10px; border: 1px solid #e9ecef; margin-top: 20px;">
+                        <h3 id="userFormTitle" style="margin-bottom: 15px; font-size: 1.1rem; color: var(--primary-dark);">Tambah Pengguna Baru</h3>
+                        <input type="hidden" id="editUserIndex" value="-1">
+                        <div class="form-group">
+                            <label>Username (Untuk Login)</label>
+                            <input type="text" id="formUsername" class="form-control" placeholder="Contoh: admin2">
+                        </div>
+                        <div class="form-group">
+                            <label>Nama Lengkap / Tampilan</label>
+                            <input type="text" id="formName" class="form-control" placeholder="Contoh: Budi Santoso">
+                        </div>
+                        <div class="form-group">
+                            <label>Password</label>
+                            <input type="password" id="formPassword" class="form-control" placeholder="Ketik password baru (Kosongkan jika tidak ingin mengubah password saat mengedit)">
+                        </div>
+                        <div style="display: flex; gap: 10px; margin-top: 20px;">
+                            <button class="btn btn-primary" onclick="saveUser()" style="padding: 10px 20px;"><i class="fas fa-save"></i> Simpan User</button>
+                            <button class="btn" onclick="cancelUserForm()" style="padding: 10px 20px; background: #bdc3c7; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600;">Batal</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Zona Berbahaya -->
+                <div class="settings-card danger-zone">
+                    <h2><i class="fas fa-exclamation-triangle"></i> Zona Berbahaya</h2>
+                    <p style="margin-bottom: 10px; color: #555; line-height: 1.5;">
+                        <b>Info:</b> Aplikasi sekarang sudah <b>tidak menyimpan data di browser</b>. Semua data selalu diambil langsung dari Google Sheets setiap kali halaman dibuka. Tampilan di semua browser/device akan <b>selalu sama otomatis</b>.
+                    </p>
+                    <p style="margin-bottom: 20px; color: #c0392b; line-height: 1.5;">
+                        <b>Reset Database</b> akan menghapus <b>SELURUH data alumni dari Google Sheets</b> secara permanen dan tidak bisa dibatalkan!
+                    </p>
+                    <button class="btn btn-danger" onclick="resetDatabase()" style="padding: 10px 20px; font-weight: bold;">
+                        <i class="fas fa-trash-alt"></i> Reset Total (Hapus Data di Google Sheets)
+                    </button>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="js/main.js"></script>
+    <script>
+        // ============================================================
+        // KONFIGURASI API (sama dengan halaman lain)
+        // ============================================================
+        const GAS_API = "https://script.google.com/macros/s/AKfycbxOHqXzXHPxP6CjPnp5TwVeyho7IPb21NUeE5uqORUDsTh0MAvO7D8b1C8zn68anlVU/exec";
+        const SECRET_TOKEN = "BKK_SMKNUDA_2026";
+
+        let usersList = [];
+
+        window.onload = function() {
+            const savedName = localStorage.getItem('adminName') || 'Admin BKK SMK NU Darussalam';
+            document.getElementById('adminName').value = savedName;
+            updateHeader(savedName);
+            loadUsers();
+        };
+
+        // ============================================================
+        // MANAJEMEN PENGGUNA - Tersimpan di Google Sheets (Cloud)
+        // ============================================================
+        function loadUsers() {
+            const tbody = document.getElementById('userTableBody');
+            tbody.innerHTML = '<tr><td colspan="3" style="padding: 20px; text-align:center; color: var(--text-muted);"><i class="fas fa-spinner fa-spin"></i> Memuat data pengguna dari server...</td></tr>';
+            
+            fetch(GAS_API + '?action=getUsers&t=' + new Date().getTime())
+                .then(r => r.json())
+                .then(data => {
+                    if (data && data.users && data.users.length > 0) {
+                        usersList = data.users;
+                    } else {
+                        // Fallback default jika server belum ada data user
+                        usersList = [{ username: 'bkk', password: 'smknuda', name: 'Admin Utama BKK' }];
+                    }
+                    renderUserTable();
+                })
+                .catch(err => {
+                    // Jika gagal koneksi, tampilkan info default aja
+                    usersList = [{ username: 'bkk', password: '(tersimpan di server)', name: 'Admin Utama BKK' }];
+                    renderUserTable();
+                    console.warn('Gagal fetch users dari GAS:', err);
+                });
+        }
+
+        function renderUserTable() {
+            const tbody = document.getElementById('userTableBody');
+            tbody.innerHTML = '';
+            usersList.forEach((u, index) => {
+                tbody.innerHTML += `
+                    <tr style="border-bottom: 1px solid var(--border);">
+                        <td style="padding: 12px; font-weight: 600;">${u.username}</td>
+                        <td style="padding: 12px;">${u.name}</td>
+                        <td style="padding: 12px; text-align: center;">
+                            <button onclick="showUserForm(${index})" style="background: #3498db; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; margin-right: 5px;" title="Edit"><i class="fas fa-edit"></i></button>
+                            ${usersList.length > 1 ? `<button onclick="deleteUser(${index})" style="background: #e74c3c; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer;" title="Hapus"><i class="fas fa-trash"></i></button>` : ''}
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+
+        function showUserForm(index) {
+            const area = document.getElementById('userFormArea');
+            document.getElementById('editUserIndex').value = index;
+            area.style.display = 'block';
+
+            if (index >= 0) {
+                document.getElementById('userFormTitle').innerText = 'Edit Pengguna';
+                const u = usersList[index];
+                document.getElementById('formUsername').value = u.username;
+                document.getElementById('formName').value = u.name || '';
+                document.getElementById('formPassword').value = '';
+            } else {
+                document.getElementById('userFormTitle').innerText = 'Tambah Pengguna Baru';
+                document.getElementById('formUsername').value = '';
+                document.getElementById('formName').value = '';
+                document.getElementById('formPassword').value = '';
+            }
+        }
+
+        function cancelUserForm() {
+            document.getElementById('userFormArea').style.display = 'none';
+        }
+
+        function saveUser() {
+            const index = parseInt(document.getElementById('editUserIndex').value);
+            const uname = document.getElementById('formUsername').value.trim();
+            const name = document.getElementById('formName').value.trim();
+            const pwd = document.getElementById('formPassword').value;
+
+            if (!uname) { alert("Username tidak boleh kosong!"); return; }
+
+            if (index >= 0) {
+                usersList[index].username = uname;
+                usersList[index].name = name;
+                if (pwd) usersList[index].password = pwd;
+            } else {
+                if (!pwd) { alert("Password tidak boleh kosong untuk user baru!"); return; }
+                usersList.push({ username: uname, password: pwd, name: name });
+            }
+
+            // Simpan ke Google Sheets via GAS
+            fetch(GAS_API, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ token: SECRET_TOKEN, action: 'saveUsers', users: usersList })
+            }).then(() => {
+                cancelUserForm();
+                renderUserTable();
+                alert('? Data pengguna berhasil disimpan ke server! Berlaku di semua perangkat.');
+            }).catch(e => {
+                alert('?? Gagal menyimpan ke server. Pastikan koneksi internet aktif.');
+            });
+        }
+
+        function deleteUser(index) {
+            if (usersList.length <= 1) {
+                alert("Tidak dapat menghapus user terakhir.");
+                return;
+            }
+            if (confirm("Yakin ingin menghapus pengguna '" + usersList[index].username + "'?")) {
+                usersList.splice(index, 1);
+                fetch(GAS_API, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ token: SECRET_TOKEN, action: 'saveUsers', users: usersList })
+                }).then(() => {
+                    renderUserTable();
+                    alert('Pengguna berhasil dihapus dari server.');
+                });
+            }
+        }
+
+        // ============================================================
+        // PROFIL ADMIN
+        // ============================================================
+        function saveProfile() {
+            const name = document.getElementById('adminName').value.trim() || 'Admin BKK';
+            localStorage.setItem('adminName', name);
+            updateHeader(name);
+            
+            const btn = document.getElementById('btnSaveProfile');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-check"></i> Tersimpan!';
+            btn.style.backgroundColor = '#27ae60';
+            setTimeout(() => { btn.innerHTML = originalText; btn.style.backgroundColor = ''; }, 2000);
+        }
+
+        function updateHeader(name) {
+            const displayObj = document.getElementById('displayAdminName');
+            const initialObj = document.getElementById('displayAdminInitials');
+            if(displayObj) displayObj.innerText = name;
+            if(initialObj) initialObj.innerText = name.charAt(0).toUpperCase();
+        }
+
+        // ============================================================
+        // BERSIHKAN CACHE LOKAL (tanpa hapus data di cloud)
+        // ============================================================
+        function clearLocalCache() {
+            if (confirm("Bersihkan semua cache lokal browser di perangkat ini?\n\nData di Google Sheets (server) AMAN dan akan dimuat ulang otomatis.")) {
+                // Hapus semua cache lokal
+                localStorage.clear();
+                alert("? Cache lokal berhasil dibersihkan!\n\nAplikasi akan memuat ulang data dari server.");
+                window.location.href = 'admin_dashboard.html';
+            }
+        }
+
+        // ============================================================
+        // RESET TOTAL (Hapus data di cloud juga)
+        // ============================================================
+        function resetDatabase() {
+            const confirm1 = confirm("?? PERINGATAN KERAS:\nIni akan menghapus SELURUH data alumni, mitra, MOU, dll dari Google Sheets (server cloud).\n\nApakah Anda BENAR-BENAR yakin?");
+            if (confirm1) {
+                const confirm2 = prompt("Ketik 'RESET' untuk mengonfirmasi:");
+                if (confirm2 === 'RESET') {
+                    // Hapus cache lokal
+                    localStorage.clear();
+                    // Kirim perintah reset ke cloud
+                    fetch(GAS_API, {
+                        method: 'POST',
+                        mode: 'no-cors',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ token: SECRET_TOKEN, action: 'resetAll' })
+                    }).then(() => {
+                        alert('? Database berhasil direset total hingga ke server cloud.');
+                        window.location.reload();
+                    }).catch(e => {
+                        alert('Cache lokal dihapus, tapi koneksi ke server terputus.');
+                        window.location.reload();
+                    });
+                } else {
+                    alert("Dibatalkan. Kata kunci tidak cocok.");
+                }
+            }
+        }
+    </script>
+</body>
+</html>
+

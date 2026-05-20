@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=1200">
+    <title>Login — BKK SMK NU Darussalam</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        (function(){
+            var ua = navigator.userAgent.toLowerCase();
+            if (ua.indexOf('firefox') > -1) {
+                document.documentElement.style.transform = 'scale(0.75)';
+                document.documentElement.style.transformOrigin = 'top left';
+                document.documentElement.style.width = '133.333vw';
+            } else {
+                document.documentElement.style.zoom = '0.75';
+            }
+        })();
+    </script>
+    <style>
+        *, *::before, *::after { 
+            box-sizing: border-box; 
+            margin: 0; 
+            padding: 0; 
+        }
+
+        :root {
+            --sage: #7d9d7b;
+            --sage-dark: #5c755a;
+            --sage-light: #f4f7f4;
+            --sage-dim: rgba(125, 157, 123, 0.1);
+            --warm-cream: #faf8f5;
+            --pure-white: #ffffff;
+            --charcoal: #2c3e2e;
+            --text-muted: #707a72;
+            --border: rgba(125, 157, 123, 0.15);
+            --gold-accent: #c5a880;
+            --shadow: 0 30px 60px rgba(92, 117, 90, 0.08);
+        }
+
+        html, body {
+            height: 100%;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: radial-gradient(circle at 10% 20%, #f4f7f4 0%, var(--warm-cream) 90%);
+            color: var(--charcoal);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* --- BACKGROUND ORNAMENT --- */
+        .bg-glow-1 {
+            position: absolute;
+            top: -10%;
+            left: -10%;
+            width: 50%;
+            height: 50%;
+            background: radial-gradient(circle, rgba(125,157,123,0.15) 0%, transparent 60%);
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .bg-glow-2 {
+            position: absolute;
+            bottom: -10%;
+            right: -10%;
+            width: 60%;
+            height: 60%;
+            background: radial-gradient(circle, rgba(197,168,128,0.1) 0%, transparent 70%);
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        /* --- CONTAINER SHELL --- */
+        .login-container {
+            width: 100%;
+            max-width: 1160px;
+            min-height: 660px;
+            background: var(--pure-white);
+            border-radius: 32px;
+            display: grid;
+            grid-template-columns: 1.2fr 1fr;
+            box-shadow: var(--shadow);
+            border: 1px solid rgba(125, 157, 123, 0.1);
+            overflow: hidden;
+            position: relative;
+            z-index: 10;
+            animation: fadeInScale 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
+        }
+
+        /* --- LEFT COLUMN: WELCOME & BANNER --- */
+        .column-welcome {
+            background-color: var(--sage-light);
+            padding: 50px 60px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .column-welcome::before {
+            content: '';
+            position: absolute;
+            top: 0; right: 0;
+            width: 150px; height: 100%;
+            background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.3));
+            pointer-events: none;
+        }
+
+        .header-logos {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            animation: fadeUp 0.8s ease both;
+        }
+
+        .logo-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: var(--pure-white);
+            border: 1px solid var(--border);
+            padding: 8px 16px;
+            border-radius: 50px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.02);
+        }
+
+        .logo-wrapper img {
+            height: 32px;
+            width: auto;
+            object-fit: contain;
+        }
+
+        .logo-divider {
+            width: 1px;
+            height: 20px;
+            background-color: var(--border);
+        }
+
+        .brand-text {
+            font-size: 0.8rem;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            color: var(--sage-dark);
+            text-transform: uppercase;
+        }
+
+        .welcome-content {
+            margin: auto 0;
+            padding: 20px 0;
+            animation: fadeUp 0.9s 0.1s ease both;
+        }
+
+        /* BANNER - FIX TERPOTONG */
+        .banner-container {
+            width: 100%;
+            max-width: 580px;
+            margin: 0 auto 30px auto;
+            border-radius: 20px;
+            overflow: hidden;
+            border: 4px solid var(--pure-white);
+            box-shadow: 0 15px 35px rgba(92, 117, 90, 0.06);
+            background: var(--pure-white);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .banner-container img {
+            width: 100%;
+            height: auto;
+            max-height: 280px;
+            object-fit: contain; /* Memastikan gambar utuh tidak terpotong sama sekali */
+            display: block;
+            transition: transform 0.5s ease;
+        }
+
+        .banner-container:hover img {
+            transform: scale(1.02);
+        }
+
+        .eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--gold-accent);
+            margin-bottom: 16px;
+        }
+
+        .eyebrow::after {
+            content: '';
+            display: block;
+            width: 35px;
+            height: 1.5px;
+            background-color: var(--gold-accent);
+        }
+
+        .welcome-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 2.8rem;
+            font-weight: 700;
+            line-height: 1.2;
+            color: var(--charcoal);
+            margin-bottom: 16px;
+        }
+
+        .welcome-title em {
+            font-style: italic;
+            font-weight: 400;
+            color: var(--sage-dark);
+        }
+
+        .welcome-desc {
+            font-size: 0.95rem;
+            font-weight: 400;
+            line-height: 1.7;
+            color: var(--text-muted);
+            max-width: 520px;
+        }
+
+        .welcome-footer {
+            font-size: 0.78rem;
+            color: var(--text-muted);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 1px solid rgba(125, 157, 123, 0.1);
+            padding-top: 24px;
+            animation: fadeUp 1s 0.2s ease both;
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background-color: var(--pure-white);
+            padding: 5px 12px;
+            border-radius: 30px;
+            border: 1px solid var(--border);
+            font-size: 0.72rem;
+            font-weight: 600;
+            color: var(--sage-dark);
+        }
+
+        .status-dot {
+            width: 6px;
+            height: 6px;
+            background-color: #2ecc71;
+            border-radius: 50%;
+            box-shadow: 0 0 8px #2ecc71;
+            animation: blink 2s infinite;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.4; }
+        }
+
+        /* --- RIGHT COLUMN: LOGIN FORM --- */
+        .column-form {
+            padding: 60px 50px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            background: var(--pure-white);
+            position: relative;
+            animation: slideIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
+        }
+
+        .form-header {
+            margin-bottom: 35px;
+        }
+
+        .form-eyebrow {
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+
+        .form-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 2.4rem;
+            font-weight: 700;
+            color: var(--charcoal);
+            line-height: 1.1;
+        }
+
+        .form-desc {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-top: 8px;
+        }
+
+        /* Inputs */
+        .input-group {
+            margin-bottom: 22px;
+        }
+
+        .input-label {
+            display: block;
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--sage-dark);
+            margin-bottom: 8px;
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        .input-icon {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            pointer-events: none;
+            transition: color 0.3s;
+        }
+
+        .input-field {
+            width: 100%;
+            background-color: var(--warm-cream);
+            border: 1px solid rgba(125, 157, 123, 0.12);
+            padding: 14px 16px 14px 44px;
+            border-radius: 12px;
+            font-size: 0.95rem;
+            font-family: inherit;
+            color: var(--charcoal);
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .input-field::placeholder {
+            color: var(--text-muted);
+            opacity: 0.55;
+        }
+
+        .input-field:focus {
+            background-color: var(--pure-white);
+            border-color: var(--sage);
+            box-shadow: 0 0 0 4px rgba(125, 157, 123, 0.1);
+        }
+
+        .input-wrapper:focus-within .input-icon {
+            color: var(--sage-dark);
+        }
+
+        .toggle-password {
+            position: absolute;
+            right: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            font-size: 0.9rem;
+            padding: 4px;
+            outline: none;
+            transition: color 0.3s;
+        }
+
+        .toggle-password:hover {
+            color: var(--sage-dark);
+        }
+
+        /* Error Banner */
+        .error-message {
+            display: none;
+            align-items: center;
+            gap: 10px;
+            background-color: rgba(231, 76, 60, 0.06);
+            border: 1px solid rgba(231, 76, 60, 0.15);
+            border-radius: 10px;
+            padding: 12px 16px;
+            font-size: 0.85rem;
+            color: #c0392b;
+            margin-bottom: 22px;
+        }
+
+        .error-message.show {
+            display: flex;
+            animation: shake 0.4s ease both;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-6px); }
+            40%, 80% { transform: translateX(6px); }
+        }
+
+        /* Login Button */
+        .btn-login {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, var(--sage) 0%, var(--sage-dark) 100%);
+            border: none;
+            border-radius: 12px;
+            color: var(--pure-white);
+            font-family: inherit;
+            font-size: 0.92rem;
+            font-weight: 700;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 20px rgba(125, 157, 123, 0.2);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-login:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 28px rgba(125, 157, 123, 0.3);
+        }
+
+        .btn-login:active {
+            transform: translateY(0);
+        }
+
+        /* Divider & Alert */
+        .info-divider {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin: 30px 0 20px 0;
+            color: var(--text-muted);
+            font-size: 0.72rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+        }
+
+        .info-divider::before, .info-divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background-color: rgba(125, 157, 123, 0.1);
+        }
+
+        .notice-box {
+            background-color: var(--sage-light);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 12px 16px;
+            font-size: 0.8rem;
+            color: var(--sage-dark);
+            line-height: 1.5;
+            display: flex;
+            gap: 10px;
+        }
+
+        .notice-box i {
+            margin-top: 2px;
+            flex-shrink: 0;
+        }
+
+        /* Animations */
+        @keyframes fadeInScale {
+            from { opacity: 0; transform: scale(0.96); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(16px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 992px) {
+            html, body {
+                overflow: auto;
+                height: auto;
+                min-height: 100vh;
+                padding: 20px;
+                display: flex;
+                align-items: center;
+            }
+
+            .login-container {
+                grid-template-columns: 1fr;
+                min-height: auto;
+                border-radius: 24px;
+            }
+
+            .column-welcome {
+                padding: 40px 30px;
+                order: 2;
+            }
+
+            .column-form {
+                padding: 40px 30px;
+                order: 1;
+            }
+
+            .banner-container img {
+                max-height: 220px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="bg-glow-1"></div>
+    <div class="bg-glow-2"></div>
+
+    <div class="login-container">
+
+        <!-- ===== COLUMN KANAN: FORM LOGIN ===== -->
+        <div class="column-form">
+            <div class="form-header">
+                <div class="form-eyebrow">Portal Administrasi</div>
+                <h2 class="form-title">Selamat Datang</h2>
+                <p class="form-desc">Silakan masuk menggunakan kredensial admin Anda.</p>
+            </div>
+
+            <form id="loginForm" onsubmit="handleLogin(event)" autocomplete="off">
+                <!-- Username -->
+                <div class="input-group">
+                    <label class="input-label" for="username">Username</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-user input-icon"></i>
+                        <input type="text" id="username" class="input-field" placeholder="Masukkan username" required autofocus>
+                    </div>
+                </div>
+
+                <!-- Password -->
+                <div class="input-group">
+                    <label class="input-label" for="password">Password</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-lock input-icon"></i>
+                        <input type="password" id="password" class="input-field" placeholder="Masukkan password" required>
+                        <button type="button" class="toggle-password" onclick="togglePassword()">
+                            <i class="fas fa-eye" id="eyeIcon"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Error Message -->
+                <div class="error-message" id="loginError">
+                    <i class="fas fa-exclamation-circle"></i>
+                    <span>Username atau password salah. Coba lagi.</span>
+                </div>
+
+                <!-- Submit Button -->
+                <button type="submit" class="btn-login" id="submitBtn">
+                    <i class="fas fa-sign-in-alt"></i>
+                    <span>Masuk ke Panel</span>
+                </button>
+            </form>
+
+            <div class="info-divider">Informasi Keamanan</div>
+
+            <div class="notice-box">
+                <i class="fas fa-shield-alt"></i>
+                <span>Akses ini dibatasi secara khusus untuk tim pengelola BKK SMK NU Darussalam. Semua sesi aktivitas tersimpan secara aman.</span>
+            </div>
+        </div>
+
+        <!-- ===== COLUMN KIRI: WELCOME BANNER ===== -->
+        <div class="column-welcome">
+            <!-- Header Logos -->
+            <div class="header-logos">
+                <div class="logo-wrapper">
+                    <img src="logo-bkk.png" alt="Logo BKK">
+                    <div class="logo-divider"></div>
+                    <img src="logo-smk.png" alt="Logo SMK NU">
+                    <span class="brand-text">BKK SMK NU Darussalam</span>
+                </div>
+            </div>
+
+            <!-- Welcome Middle content -->
+            <div class="welcome-content">
+                <!-- Banner Image (FIXED CROP) -->
+                <div class="banner-container">
+                    <img src="banner.png" alt="BKK SMK NU Darussalam">
+                </div>
+
+                <div class="eyebrow">Sistem Tracer Study</div>
+                <h1 class="welcome-title">
+                    Pusat Informasi &amp;<br>
+                    Karir Alumni <em>SMK NU Darussalam</em>
+                </h1>
+                <p class="welcome-desc">
+                    Layanan bursa kerja terpadu untuk pendataan alumni secara dinamis, melacak keterserapan industri, serta penyelarasan lulusan dengan kebutuhan dunia kerja.
+                </p>
+            </div>
+
+            <!-- Footer Welcome -->
+            <div class="welcome-footer">
+                <span>© 2026 TIM TKJ SMK NU Darussalam</span>
+                <div class="status-badge">
+                    <div class="status-dot"></div>
+                    Server Terhubung · v2.0
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // Clear session on login page
+        sessionStorage.removeItem('role');
+
+        // =====================================================
+        // CONFIG & FALLBACK CREDENTIALS (Untuk Offline/Failover)
+        // =====================================================
+        const GAS_API = "https://script.google.com/macros/s/AKfycbxOHqXzXHPxP6CjPnp5TwVeyho7IPb21NUeE5uqORUDsTh0MAvO7D8b1C8zn68anlVU/exec";
+        
+        const OFFLINE_USERS = [
+            { username: 'admin', password: 'bkknuda2026', name: 'Admin Utama BKK' },
+            { username: 'bkk',   password: 'smknuda',     name: 'Staf BKK' }
+        ];
+
+        async function handleLogin(e) {
+            e.preventDefault();
+            const uname = document.getElementById('username').value.trim();
+            const pwd   = document.getElementById('password').value;
+            const err   = document.getElementById('loginError');
+            const btn   = document.getElementById('submitBtn');
+
+            // Show loading animation on button
+            const originalBtnHTML = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i><span>Memverifikasi...</span>';
+            btn.style.pointerEvents = 'none';
+            err.classList.remove('show');
+
+            let authenticated = false;
+            let loggedInUser = null;
+
+            try {
+                // Tembak API secara Asinkron (Timeout 6 Detik agar cepat fallback jika lemot)
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 6000);
+                
+                const response = await fetch(GAS_API + '?action=getUsers&t=' + new Date().getTime(), {
+                    signal: controller.signal
+                });
+                clearTimeout(timeoutId);
+                
+                const data = await response.json();
+                
+                if (data && data.users && data.users.length > 0) {
+                    // Cari kecocokan di database Cloud (Google Sheets)
+                    loggedInUser = data.users.find(u => u.username === uname && u.password === pwd);
+                    if (loggedInUser) {
+                        authenticated = true;
+                    }
+                }
+            } catch (error) {
+                console.warn("Koneksi cloud gagal, menggunakan offline fallback credentials:", error);
+                // Fallback ke kredensial offline jika koneksi internet terputus
+                loggedInUser = OFFLINE_USERS.find(u => u.username === uname && u.password === pwd);
+                if (loggedInUser) {
+                    authenticated = true;
+                }
+            }
+
+            if (authenticated) {
+                // Set sesi peran & simpan nama profil terpilih
+                sessionStorage.setItem('role', 'admin');
+                localStorage.setItem('adminName', loggedInUser.name || 'Administrator');
+                
+                setTimeout(() => {
+                    window.location.replace('admin_dashboard.html');
+                }, 500);
+            } else {
+                // Login gagal: Tampilkan error shake & kembalikan button
+                btn.innerHTML = originalBtnHTML;
+                btn.style.pointerEvents = 'auto';
+                void err.offsetWidth; // Force Reflow
+                err.classList.add('show');
+                document.getElementById('password').value = '';
+                document.getElementById('password').focus();
+            }
+        }
+
+        function togglePassword() {
+            const input = document.getElementById('password');
+            const icon  = document.getElementById('eyeIcon');
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.className = 'fas fa-eye-slash';
+            } else {
+                input.type = 'password';
+                icon.className = 'fas fa-eye';
+            }
+        }
+    </script>
+
+    <!-- Custom JS -->
+    <script src="js/main.js"></script>
+
+</body>
+</html>
