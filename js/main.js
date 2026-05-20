@@ -3,7 +3,10 @@
 // ============================================================
 const SUPABASE_URL = "https://ilnfzebpoczlwocpzlop.supabase.co";
 const SUPABASE_KEY = "sb_publishable_75Y_xJl_9ntQt3R2TnkSUw_pktf_FbV";
-const supabase = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY) : null;
+// Menggunakan var (bukan const) untuk menghindari SyntaxError tabrakan deklarasi dengan global var di js/supabase.js
+var supabase = (window.supabase && typeof window.supabase.createClient === 'function') 
+    ? window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY) 
+    : window.supabase;
 
 document.addEventListener('DOMContentLoaded', function () {
 
