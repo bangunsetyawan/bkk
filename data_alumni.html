@@ -693,7 +693,7 @@
     </div>
 
     <!-- Supabase SDK CDN -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabase.js"></script>
     <!-- Custom JS -->
     <script src="js/main.js"></script>
     <!-- SheetJS for Excel Reading -->
@@ -1165,15 +1165,38 @@
         // Load data on start dengan Sinkronisasi Cloud (Zero Delay Pattern)
         window.onload = function() {
             const tbody = document.querySelector('.data-table tbody');
-            let originalTitle = document.getElementById('tableSubtitle').innerHTML;
+            let originalTitle = document.getElementById('tableSubtitle') ? document.getElementById('tableSubtitle').innerHTML : '';
             
             const savedData = localStorage.getItem("alumniData");
-            document.getElementById('tableSubtitle').innerHTML = '<i class="fas fa-sync fa-spin" style="color: var(--primary);"></i> Sinkronisasi Cloud...';
+            if (document.getElementById('tableSubtitle')) {
+                document.getElementById('tableSubtitle').innerHTML = '<i class="fas fa-sync fa-spin" style="color: var(--primary);"></i> Sinkronisasi Cloud...';
+            }
+
+            if (!supabase) {
+                console.warn("Supabase SDK gagal dimuat. Menjalankan fallback offline...");
+                if (document.getElementById('tableSubtitle')) {
+                    document.getElementById("tableSubtitle").innerHTML = "<i class='fas fa-wifi' style='color: #e74c3c;'></i> Mode Offline (SDK Gagal). " + originalTitle;
+                }
+                if (savedData) {
+                    try {
+                        const parsedData = JSON.parse(savedData);
+                        if (parsedData && parsedData.length > 0) {
+                            if (selectedYear && selectedMajor) loadFilteredData();
+                        }
+                    } catch(err) { console.error(err); }
+                }
+                updateAlumniCounts();
+                if (selectedYear) updateMajorCounts(selectedYear);
+                const loader = document.getElementById("globalLoader");
+                if (loader) loader.style.display = "none";
+                return;
+            }
 
             supabase.from('alumni').select('*')
                 .then(({ data: cloudData, error }) => {
                     if (error) throw error;
-                    document.getElementById('globalLoader').style.display = 'none';
+                    const loader = document.getElementById('globalLoader');
+                    if (loader) loader.style.display = 'none';
 
                     const normalized = (cloudData || []).map(row => {
                         const newRow = {};
@@ -1193,7 +1216,9 @@
                             tbody.innerHTML = `<tr><td colspan="23" style="text-align: center; padding: 20px;">Belum ada data alumni.</td></tr>`;
                         }
                     }
-                    document.getElementById('tableSubtitle').innerHTML = '<i class="fas fa-check-circle" style="color: #27ae60;"></i> Update Terbaru. ' + originalTitle;
+                    if (document.getElementById('tableSubtitle')) {
+                        document.getElementById('tableSubtitle').innerHTML = '<i class="fas fa-check-circle" style="color: #27ae60;"></i> Update Terbaru. ' + originalTitle;
+                    }
                     updateAlumniCounts();
                     if (selectedYear) {
                         updateMajorCounts(selectedYear);
@@ -1201,7 +1226,9 @@
                 })
                 .catch(e => {
                     console.error("Gagal load dari Supabase, menggunakan data lokal:", e);
-                    document.getElementById("tableSubtitle").innerHTML = "<i class='fas fa-wifi' style='color: #e74c3c;'></i> Mode Offline. " + originalTitle;
+                    if (document.getElementById('tableSubtitle')) {
+                        document.getElementById("tableSubtitle").innerHTML = "<i class='fas fa-wifi' style='color: #e74c3c;'></i> Mode Offline. " + originalTitle;
+                    }
                     
                     const savedData = localStorage.getItem("alumniData");
                     if(savedData) {
@@ -1214,7 +1241,8 @@
                     }
                     updateAlumniCounts();
                     if (selectedYear) updateMajorCounts(selectedYear);
-                    document.getElementById("globalLoader").style.display = "none";
+                    const loader = document.getElementById("globalLoader");
+                    if (loader) loader.style.display = "none";
                 });
         };
 

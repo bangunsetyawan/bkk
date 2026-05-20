@@ -232,7 +232,7 @@
     </div>
 
     <!-- Supabase SDK CDN -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabase.js"></script>
     <script src="js/main.js"></script>
     <script>
         let usersList = [];
@@ -249,8 +249,17 @@
         // ============================================================
         function loadUsers() {
             const tbody = document.getElementById('userTableBody');
-            tbody.innerHTML = '<tr><td colspan="3" style="padding: 20px; text-align:center; color: var(--text-muted);"><i class="fas fa-spinner fa-spin"></i> Memuat data pengguna dari cloud...</td></tr>';
+            if (tbody) {
+                tbody.innerHTML = '<tr><td colspan="3" style="padding: 20px; text-align:center; color: var(--text-muted);"><i class="fas fa-spinner fa-spin"></i> Memuat data pengguna dari cloud...</td></tr>';
+            }
             
+            if (!supabase) {
+                console.warn("Supabase SDK gagal dimuat. Menjalankan fallback offline...");
+                usersList = [{ username: 'bkk', password: '(tersimpan di server)', name: 'Admin Utama BKK' }];
+                renderUserTable();
+                return;
+            }
+
             supabase.from('users').select('*')
                 .then(({ data, error }) => {
                     if (error) throw error;

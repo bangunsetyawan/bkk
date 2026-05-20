@@ -578,17 +578,36 @@
     </div>
 
     <!-- Supabase SDK CDN -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabase.js"></script>
     <!-- Global JS -->
     <script src="js/main.js"></script>
     <script>
         window.onload = function () {
-            // TIDAK ADA localStorage - Selalu fetch langsung dari Supabase
-            document.getElementById('yearFilter').addEventListener('change', function (e) {
-                if (window._alumniDataCache) {
-                    loadDashboardData(e.target.value, window._alumniDataCache);
-                }
-            });
+            const yearFilter = document.getElementById('yearFilter');
+            if (yearFilter) {
+                yearFilter.addEventListener('change', function (e) {
+                    if (window._alumniDataCache) {
+                        loadDashboardData(e.target.value, window._alumniDataCache);
+                    }
+                });
+            }
+
+            if (!supabase) {
+                console.warn("Supabase SDK gagal dimuat. Menjalankan fallback offline...");
+                document.getElementById('globalLoader').style.display = 'none';
+                const updateEl = document.getElementById('lastUpdateTime');
+                if (updateEl) updateEl.innerText = 'Database Offline (SDK Gagal Dimuat)';
+                
+                // Coba ambil cache offline lokal jika ada
+                let offlineData = [];
+                try {
+                    const saved = localStorage.getItem('alumniData');
+                    if (saved) offlineData = JSON.parse(saved);
+                } catch(err) {}
+                window._alumniDataCache = offlineData;
+                loadDashboardData('all', offlineData);
+                return;
+            }
 
             supabase.from('alumni').select('*')
                 .then(({ data: cloudData, error }) => {
@@ -615,8 +634,16 @@
                     console.warn("Gagal koneksi ke Supabase:", e);
                     document.getElementById('globalLoader').style.display = 'none';
                     const updateEl = document.getElementById('lastUpdateTime');
-                    if (updateEl) updateEl.innerText = 'Gagal terhubung ke database - Muat ulang';
-                    loadDashboardData('all', []);
+                    if (updateEl) updateEl.innerText = 'Gagal terhubung ke database';
+                    
+                    // Coba ambil cache offline lokal jika ada
+                    let offlineData = [];
+                    try {
+                        const saved = localStorage.getItem('alumniData');
+                        if (saved) offlineData = JSON.parse(saved);
+                    } catch(err) {}
+                    window._alumniDataCache = offlineData;
+                    loadDashboardData('all', offlineData);
                 });
         };
 

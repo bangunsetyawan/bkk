@@ -185,7 +185,7 @@
     </div>
 
     <!-- Supabase SDK CDN -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabase.js"></script>
     <!-- Custom JS -->
     <script src="js/main.js"></script>
     <script>
@@ -193,6 +193,11 @@
             // 1. Tampilkan lokal instan
             loadMitraIndustri();
             
+            if (!supabase) {
+                console.warn("Supabase SDK gagal dimuat. Menjalankan fallback offline...");
+                return;
+            }
+
             // 2. Sinkronisasi background dengan Supabase
             supabase.from('alumni').select('*')
                 .then(({ data: cloudData, error }) => {
