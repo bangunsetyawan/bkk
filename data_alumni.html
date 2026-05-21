@@ -24,109 +24,106 @@
     <style>
         .table-responsive {
             overflow-x: auto;
+            overflow-y: auto;
             background: var(--white);
             border-radius: 12px;
             box-shadow: var(--shadow);
-            padding: 1px; /* border radius fix */
-            max-height: 65vh; /* For sticky header */
+            padding: 1px;
+            max-height: 82vh; /* Hampir fullscreen secara vertikal */
             position: relative;
+            border: 1px solid var(--border-color);
         }
         .data-table {
             width: 100%;
             border-collapse: collapse;
-            font-size: 0.9rem;
-            min-width: 2500px; /* Lebar total tabel agar bisa scroll horizontal */
+            font-size: 0.82rem; /* Ukuran font grid standar */
+            min-width: 2500px;
+            white-space: nowrap;
         }
         .data-table th, .data-table td {
-            padding: 12px 15px;
+            padding: 8px 12px; /* Lebih rapat dan mudah dibaca */
             text-align: left;
-            border: 1px solid var(--border); /* Clear grid lines */
+            border: 1px solid #cbd5e1; /* Gridlines abu-abu khas Excel */
         }
         .data-table th {
             position: sticky;
             top: 0;
             z-index: 10;
-            background-color: var(--primary-bg);
-            color: var(--primary-dark);
-            font-weight: 600;
-            letter-spacing: 0.5px;
+            background-color: #f1f5f9; /* Header abu-abu terang */
+            color: var(--dark-slate);
+            font-weight: 700;
+            letter-spacing: 0.3px;
+            border-bottom: 2px solid #94a3b8;
         }
-        /* Freeze Column Name */
+        /* Freeze Columns */
         .freeze-col-1 {
             position: sticky;
             left: 0;
             z-index: 5;
             background-color: var(--white);
-            min-width: 50px;
-            max-width: 50px;
+            min-width: 45px;
+            max-width: 45px;
+            text-align: center !important;
+            font-weight: 600;
         }
         .freeze-col-2 {
             position: sticky;
-            left: 50px; /* Width of col 1 */
+            left: 45px; /* Lebar kolom NO */
             z-index: 5;
             background-color: var(--white);
-            box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+            border-right: 3px double #94a3b8 !important; /* Batas pemisah freeze column ala Excel */
         }
         .data-table th.freeze-col-1, .data-table th.freeze-col-2 {
-            z-index: 15; /* Highest z-index for corner cell */
-            background-color: var(--primary-bg);
+            z-index: 15; /* Prioritas tertinggi untuk pojok kiri atas */
+            background-color: #e2e8f0;
         }
-        /* Editable Cells */
+        /* Hover effects */
+        .data-table tbody tr:hover {
+            background-color: #f8fafc;
+        }
+        .data-table tbody tr:hover .freeze-col-1,
+        .data-table tbody tr:hover .freeze-col-2 {
+            background-color: #f8fafc !important;
+        }
+        /* Editable Cells & Excel Active Focus border */
         .editable-cell {
             outline: none;
-            transition: background 0.2s;
-            min-width: 80px;
+            transition: background 0.15s, box-shadow 0.15s;
         }
         .editable-cell:focus {
-            background-color: #fff;
-            box-shadow: inset 0 0 0 2px var(--primary);
-        }
-        /* Placeholder for empty cells */
-        .editable-cell:empty::before {
-            content: "Belum di isi..";
-            color: #ccc;
-            font-style: italic;
-            font-size: 0.85rem;
+            background-color: #ffffff !important;
+            box-shadow: inset 0 0 0 2px #27ae60 !important; /* Border hijau aktif khas Excel */
+            position: relative;
+            z-index: 2;
         }
         .editable-cell:hover {
-            background-color: rgba(52, 152, 219, 0.05);
+            background-color: rgba(39, 174, 96, 0.04);
             cursor: text;
         }
-        .data-table {
-            width: 100%;
-            border-collapse: collapse;
-            white-space: nowrap;
-            font-size: 0.85rem;
+        /* Placeholder */
+        .editable-cell:empty::before {
+            content: "Belum diisi..";
+            color: #94a3b8;
+            font-style: italic;
+            font-size: 0.78rem;
         }
-        .data-table th, .data-table td {
-            padding: 15px;
-            text-align: left;
-            border-bottom: 1px solid var(--border);
-        }
-        .data-table th, .data-table td {
-            padding: 15px;
-            text-align: left;
-            border-bottom: 1px solid var(--border);
-        }
-        .data-table tbody tr:hover {
-            background-color: rgba(125, 157, 123, 0.05);
-        }
+        
         .action-btns {
             display: flex;
             gap: 12px;
-            margin-bottom: 25px;
+            margin-bottom: 20px;
             flex-wrap: wrap;
         }
         .status-badge {
-            padding: 5px 10px;
+            padding: 4px 8px;
             border-radius: 50px;
-            font-size: 0.75rem;
+            font-size: 0.72rem;
             font-weight: 600;
         }
         .status-bekerja { background: rgba(46, 204, 113, 0.15); color: #27ae60; }
         .status-kuliah { background: rgba(52, 152, 219, 0.15); color: #2980b9; }
 
-        /* Grid Angkatan */
+        /* Grid Angkatan & Jurusan */
         .angkatan-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
@@ -161,6 +158,45 @@
             color: var(--text-muted);
             font-size: 0.9rem;
             margin: 0;
+        }
+
+        /* Modal Tabs System untuk Jendela Edit */
+        .modal-tabs {
+            display: flex;
+            gap: 5px;
+            border-bottom: 2px solid #e2e8f0;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        .tab-btn {
+            padding: 10px 16px;
+            background: none;
+            border: none;
+            border-bottom: 2px solid transparent;
+            font-weight: 600;
+            font-size: 0.88rem;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+        .tab-btn:hover {
+            color: var(--primary);
+        }
+        .tab-btn.active {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+            animation: tabFadeIn 0.25s ease-in-out;
+        }
+        @keyframes tabFadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
         }
     </style>
     <!-- ZOOM 75% - Inline Script, tidak terpengaruh cache -->
@@ -507,179 +543,208 @@
         </main>
     </div>
 
-    <!-- Modal Tambah Data -->
-    <div id="modalTambah" class="modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 1000; justify-content: center; align-items: center;">
-        <div style="background: white; padding: 30px; border-radius: 12px; width: 90%; max-width: 700px; max-height: 90vh; overflow-y: auto; box-shadow: 0 10px 25px rgba(0,0,0,0.2); animation: fadeIn 0.3s ease;">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
-                <h2 style="color: var(--primary-dark); margin: 0; font-size: 1.5rem;">Tambah Data Alumni</h2>
-                <button onclick="closeTambahModal()" style="background: none; border: none; font-size: 1.8rem; cursor: pointer; color: #999;">&times;</button>
+    <!-- Jendela Edit Alumni (Modal Terpadu) -->
+    <div id="modalEditAlumni" class="modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 1000; justify-content: center; align-items: center;">
+        <div style="background: white; padding: 30px; border-radius: 12px; width: 90%; max-width: 750px; max-height: 90vh; overflow-y: auto; box-shadow: 0 10px 25px rgba(0,0,0,0.2); animation: fadeIn 0.3s ease; border: 1px solid var(--border-color);">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid var(--border-color); padding-bottom: 15px;">
+                <h2 id="modalTitle" style="color: var(--primary); margin: 0; font-size: 1.5rem; font-weight: 700;">Edit Data Alumni</h2>
+                <button onclick="closeEditModal()" style="background: none; border: none; font-size: 1.8rem; cursor: pointer; color: var(--text-muted); transition: color 0.2s;">&times;</button>
+            </div>
+
+            <!-- Tabs System -->
+            <div class="modal-tabs">
+                <button type="button" class="tab-btn active" onclick="switchModalTab('tab-pribadi')"><i class="fas fa-user" style="margin-right: 6px;"></i>Data Pribadi</button>
+                <button type="button" class="tab-btn" onclick="switchModalTab('tab-kontak')"><i class="fas fa-address-book" style="margin-right: 6px;"></i>Kontak & Alamat</button>
+                <button type="button" class="tab-btn" onclick="switchModalTab('tab-pendidikan')"><i class="fas fa-graduation-cap" style="margin-right: 6px;"></i>Pendidikan</button>
+                <button type="button" class="tab-btn" onclick="switchModalTab('tab-tracer')"><i class="fas fa-briefcase" style="margin-right: 6px;"></i>Tracer Study / Karir</button>
             </div>
             
-            <form id="formTambahAlumni" onsubmit="submitDataAlumni(event)">
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
-                    <!-- Data Pribadi -->
-                    <h4 style="grid-column: 1 / -1; margin: 10px 0 0 0; color: var(--primary); border-bottom: 1px solid var(--border); padding-bottom: 5px;">Data Pribadi</h4>
-                    <div>
-                        <label style="font-weight: 600; margin-bottom: 5px; display: block; font-size: 0.9rem;">NISN</label>
-                        <input type="text" class="form-control" required>
-                    </div>
-                    <div>
-                        <label style="font-weight: 600; margin-bottom: 5px; display: block; font-size: 0.9rem;">NIK</label>
-                        <input type="text" class="form-control" required>
-                    </div>
-                    <div style="grid-column: 1 / -1;">
-                        <label style="font-weight: 600; margin-bottom: 5px; display: block; font-size: 0.9rem;">Nama Lengkap</label>
-                        <input type="text" class="form-control" required>
-                    </div>
-                    <div>
-                        <label style="font-weight: 600; margin-bottom: 5px; display: block; font-size: 0.9rem;">Jenis Kelamin</label>
-                        <select class="form-control" required>
-                            <option value="">Pilih...</option><option>Laki-laki</option><option>Perempuan</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label style="font-weight: 600; margin-bottom: 5px; display: block; font-size: 0.9rem;">Agama</label>
-                        <select class="form-control" required>
-                            <option value="">Pilih...</option><option>Islam</option><option>Kristen</option><option>Katolik</option><option>Hindu</option><option>Buddha</option><option>Konghucu</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label style="font-weight: 600; margin-bottom: 5px; display: block; font-size: 0.9rem;">Tempat Lahir</label>
-                        <input type="text" class="form-control" required>
-                    </div>
-                    <div>
-                        <label style="font-weight: 600; margin-bottom: 5px; display: block; font-size: 0.9rem;">Tanggal Lahir</label>
-                        <input type="date" class="form-control" required>
-                    </div>
-
-                    <!-- Kontak & Alamat -->
-                    <h4 style="grid-column: 1 / -1; margin: 10px 0 0 0; color: var(--primary); border-bottom: 1px solid var(--border); padding-bottom: 5px;">Kontak & Alamat</h4>
-                    <div style="grid-column: 1 / -1;">
-                        <label style="font-weight: 600; margin-bottom: 5px; display: block; font-size: 0.9rem;">Alamat Lengkap</label>
-                        <input type="text" class="form-control" required>
-                    </div>
-                    <div>
-                        <label style="font-weight: 600; margin-bottom: 5px; display: block; font-size: 0.9rem;">Kota / Kabupaten</label>
-                        <input type="text" class="form-control" required>
-                    </div>
-                    <div>
-                        <label style="font-weight: 600; margin-bottom: 5px; display: block; font-size: 0.9rem;">No. HP / WA</label>
-                        <input type="tel" class="form-control" required>
-                    </div>
-                    <div style="grid-column: 1 / -1;">
-                        <label style="font-weight: 600; margin-bottom: 5px; display: block; font-size: 0.9rem;">Email Aktif</label>
-                        <input type="email" class="form-control" required>
-                    </div>
-
-                    <!-- Pendidikan -->
-                    <h4 style="grid-column: 1 / -1; margin: 10px 0 0 0; color: var(--primary); border-bottom: 1px solid var(--border); padding-bottom: 5px;">Data Pendidikan</h4>
-                    <div>
-                        <label style="font-weight: 600; margin-bottom: 5px; display: block; font-size: 0.9rem;">Kompetensi Keahlian</label>
-                        <select class="form-control" required>
-                            <option value="">Pilih Kompetensi...</option>
-                            <option>Teknik Komputer dan Jaringan (TKJ)</option>
-                            <option>Teknik Kendaraan Ringan Otomotif (TKRO)</option>
-                            <option>Akuntansi dan Keuangan Lembaga (AKL)</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label style="font-weight: 600; margin-bottom: 5px; display: block; font-size: 0.9rem;">Tahun Lulus</label>
-                        <input type="number" class="form-control" placeholder="Contoh: 2024" required>
-                    </div>
-
-                    <!-- Karir / Status (Tracer Study) -->
-                    <h4 style="grid-column: 1 / -1; margin: 10px 0 0 0; color: var(--primary); border-bottom: 1px solid var(--border); padding-bottom: 5px;">Tracer Study (Karir)</h4>
-                    <div>
-                        <label style="font-weight: 600; margin-bottom: 5px; display: block; font-size: 0.9rem;">Status Saat Ini</label>
-                        <select class="form-control" required>
-                            <option value="">Pilih Status...</option>
-                            <option>Bekerja</option>
-                            <option>Wirausaha</option>
-                            <option>Melanjutkan Studi</option>
-                            <option>Bekerja sambil Studi</option>
-                            <option>Wirausaha sambil Studi</option>
-                            <option>Sedang Mencari Kerja</option>
-                            <option>Tidak Bekerja / Mengurus Rumah Tangga</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label style="font-weight: 600; margin-bottom: 5px; display: block; font-size: 0.9rem;">Nama Tempat Kerja / Kampus</label>
-                        <input type="text" class="form-control">
-                    </div>
-                    <div>
-                        <label style="font-weight: 600; margin-bottom: 5px; display: block; font-size: 0.9rem;">Jabatan / Pekerjaan</label>
-                        <select class="form-control">
-                            <option value="">Pilih Jabatan...</option>
-                            <option>Admin / Staf Perkantoran</option>
-                            <option>Agen / Pemasar / Sales</option>
-                            <option>Barista / Pramusaji</option>
-                            <option>Editor / Desainer / Kreatif</option>
-                            <option>Kasir / Pramuniaga Toko</option>
-                            <option>Kurir / Driver / Sopir</option>
-                            <option>Mekanik / Montir / Teknisi</option>
-                            <option>Operator Mesin / Pabrik</option>
-                            <option>Pegawai Swasta Umum</option>
-                            <option>Pekerja Kasar / Buruh Harian</option>
-                            <option>Pengajar / Guru / Instruktur</option>
-                            <option>Tenaga Medis / Kesehatan</option>
-                            <option>Wiraswasta / Pemilik Usaha</option>
-                            <option>Mahasiswa / Pelajar</option>
-                            <option>Lainnya (Isi Manual)</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label style="font-weight: 600; margin-bottom: 5px; display: block; font-size: 0.9rem;">Sektor Usaha / Bidang</label>
-                        <select class="form-control">
-                            <option value="">Pilih Sektor...</option>
-                            <option>Perdagangan Ritel / Grosir</option>
-                            <option>Otomotif / Bengkel</option>
-                            <option>Makanan dan Minuman (F&B)</option>
-                            <option>Transportasi / Logistik</option>
-                            <option>Teknologi Informasi / Komunikasi</option>
-                            <option>Jasa Keuangan / Perbankan</option>
-                            <option>Industri Pengolahan / Pabrik</option>
-                            <option>Konstruksi / Bangunan</option>
-                            <option>Pertanian / Perikanan</option>
-                            <option>Pendidikan / Sosial</option>
-                            <option>Kesehatan / Kecantikan</option>
-                            <option>Lainnya (Isi Manual)</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label style="font-weight: 600; margin-bottom: 5px; display: block; font-size: 0.9rem;">Lokasi Kerja (Kota)</label>
-                        <input type="text" class="form-control">
-                    </div>
-                    <div>
-                        <label style="font-weight: 600; margin-bottom: 5px; display: block; font-size: 0.9rem;">Keselarasan Jurusan</label>
-                        <select class="form-control">
-                            <option value="">Pilih...</option>
-                            <option>Sangat Selaras</option>
-                            <option>Selaras</option>
-                            <option>Tidak Selaras</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label style="font-weight: 600; margin-bottom: 5px; display: block; font-size: 0.9rem;">Rentang Pendapatan</label>
-                        <select class="form-control">
-                            <option value="">Pilih...</option>
-                            <option>&lt; 500.000</option>
-                            <option>500.000 - 1.000.000</option>
-                            <option>1.000.000 - 2.000.000</option>
-                            <option>2.000.000 - 3.000.000</option>
-                            <option>3.000.000 - 4.000.000</option>
-                            <option>4.000.000 - 5.000.000</option>
-                            <option>&gt; 5.000.000</option>
-                        </select>
-                    </div>
-                    <div style="grid-column: 1 / -1;">
-                        <label style="font-weight: 600; margin-bottom: 5px; display: block; font-size: 0.9rem;">Keterangan Tambahan</label>
-                        <textarea class="form-control" rows="2"></textarea>
+            <form id="formEditAlumni" onsubmit="submitEditForm(event)">
+                
+                <!-- TAB 1: DATA PRIBADI -->
+                <div id="tab-pribadi" class="tab-content active">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 18px;">
+                        <div>
+                            <label style="font-weight: 600; margin-bottom: 6px; display: block; font-size: 0.88rem; color: var(--text-main);">NISN</label>
+                            <input type="text" id="modal-nisn" class="form-control" placeholder="10 digit angka" maxlength="10" required style="width:100%; padding:10px; border:1px solid var(--border-color); border-radius:6px; font-size:0.9rem;">
+                        </div>
+                        <div>
+                            <label style="font-weight: 600; margin-bottom: 6px; display: block; font-size: 0.88rem; color: var(--text-main);">NIK</label>
+                            <input type="text" id="modal-nik" class="form-control" placeholder="16 digit angka" maxlength="16" required style="width:100%; padding:10px; border:1px solid var(--border-color); border-radius:6px; font-size:0.9rem;">
+                        </div>
+                        <div style="grid-column: 1 / -1;">
+                            <label style="font-weight: 600; margin-bottom: 6px; display: block; font-size: 0.88rem; color: var(--text-main);">Nama Lengkap</label>
+                            <input type="text" id="modal-nama" class="form-control" placeholder="NAMA LENGKAP ALUMNI" required style="width:100%; padding:10px; border:1px solid var(--border-color); border-radius:6px; font-size:0.9rem; text-transform: uppercase;">
+                        </div>
+                        <div>
+                            <label style="font-weight: 600; margin-bottom: 6px; display: block; font-size: 0.88rem; color: var(--text-main);">Jenis Kelamin</label>
+                            <select id="modal-jk" class="form-control" required style="width:100%; padding:10px; border:1px solid var(--border-color); border-radius:6px; font-size:0.9rem; background-color: var(--white);">
+                                <option value="">Pilih...</option>
+                                <option value="L">Laki-laki</option>
+                                <option value="P">Perempuan</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label style="font-weight: 600; margin-bottom: 6px; display: block; font-size: 0.88rem; color: var(--text-main);">Agama</label>
+                            <select id="modal-agama" class="form-control" required style="width:100%; padding:10px; border:1px solid var(--border-color); border-radius:6px; font-size:0.9rem; background-color: var(--white);">
+                                <option value="ISLAM" selected>Islam</option>
+                                <option value="KRISTEN">Kristen</option>
+                                <option value="KATOLIK">Katolik</option>
+                                <option value="HINDU">Hindu</option>
+                                <option value="BUDDHA">Buddha</option>
+                                <option value="KONGHUCU">Konghucu</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label style="font-weight: 600; margin-bottom: 6px; display: block; font-size: 0.88rem; color: var(--text-main);">Tempat Lahir</label>
+                            <input type="text" id="modal-tempat-lahir" class="form-control" placeholder="KOTA / KABUPATEN LAHIR" required style="width:100%; padding:10px; border:1px solid var(--border-color); border-radius:6px; font-size:0.9rem; text-transform: uppercase;">
+                        </div>
+                        <div>
+                            <label style="font-weight: 600; margin-bottom: 6px; display: block; font-size: 0.88rem; color: var(--text-main);">Tanggal Lahir</label>
+                            <input type="date" id="modal-tanggal-lahir" class="form-control" required style="width:100%; padding:10px; border:1px solid var(--border-color); border-radius:6px; font-size:0.9rem;">
+                        </div>
                     </div>
                 </div>
-                
-                <div style="margin-top: 25px; text-align: right; padding-top: 15px; border-top: 1px solid var(--border);">
-                    <button type="button" class="btn btn-outline" onclick="closeTambahModal()">Batal</button>
-                    <button type="submit" class="btn btn-primary" style="margin-left: 10px;">Simpan Data</button>
+
+                <!-- TAB 2: KONTAK & ALAMAT -->
+                <div id="tab-kontak" class="tab-content">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 18px;">
+                        <div style="grid-column: 1 / -1;">
+                            <label style="font-weight: 600; margin-bottom: 6px; display: block; font-size: 0.88rem; color: var(--text-main);">Alamat Lengkap</label>
+                            <input type="text" id="modal-alamat" class="form-control" placeholder="Jl. Raya Srono No. X, RT YY / RW ZZ" required style="width:100%; padding:10px; border:1px solid var(--border-color); border-radius:6px; font-size:0.9rem;">
+                        </div>
+                        <div>
+                            <label style="font-weight: 600; margin-bottom: 6px; display: block; font-size: 0.88rem; color: var(--text-main);">Kota / Kabupaten Tempat Tinggal</label>
+                            <input type="text" id="modal-kota" class="form-control" placeholder="Contoh: Banyuwangi" required style="width:100%; padding:10px; border:1px solid var(--border-color); border-radius:6px; font-size:0.9rem;">
+                        </div>
+                        <div>
+                            <label style="font-weight: 600; margin-bottom: 6px; display: block; font-size: 0.88rem; color: var(--text-main);">No. HP / WhatsApp</label>
+                            <input type="tel" id="modal-hp" class="form-control" placeholder="Contoh: 081234567890" required style="width:100%; padding:10px; border:1px solid var(--border-color); border-radius:6px; font-size:0.9rem;">
+                        </div>
+                        <div style="grid-column: 1 / -1;">
+                            <label style="font-weight: 600; margin-bottom: 6px; display: block; font-size: 0.88rem; color: var(--text-main);">Email Aktif</label>
+                            <input type="email" id="modal-email" class="form-control" placeholder="Contoh: alumni@gmail.com" required style="width:100%; padding:10px; border:1px solid var(--border-color); border-radius:6px; font-size:0.9rem;">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TAB 3: PENDIDIKAN -->
+                <div id="tab-pendidikan" class="tab-content">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 18px;">
+                        <div>
+                            <label style="font-weight: 600; margin-bottom: 6px; display: block; font-size: 0.88rem; color: var(--text-main);">Kompetensi Keahlian</label>
+                            <select id="modal-kompetensi" class="form-control" required style="width:100%; padding:10px; border:1px solid var(--border-color); border-radius:6px; font-size:0.9rem; background-color: var(--white);">
+                                <option value="">Pilih Kompetensi...</option>
+                                <option value="TKJ">Teknik Komputer dan Jaringan (TKJ)</option>
+                                <option value="TKRO">Teknik Kendaraan Ringan Otomotif (TKRO)</option>
+                                <option value="AKL">Akuntansi dan Keuangan Lembaga (AKL)</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label style="font-weight: 600; margin-bottom: 6px; display: block; font-size: 0.88rem; color: var(--text-main);">Tahun Lulus</label>
+                            <input type="number" id="modal-tahun-lulus" class="form-control" placeholder="Contoh: 2024" required style="width:100%; padding:10px; border:1px solid var(--border-color); border-radius:6px; font-size:0.9rem;">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TAB 4: TRACER STUDY / KARIR -->
+                <div id="tab-tracer" class="tab-content">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 18px;">
+                        <div>
+                            <label style="font-weight: 600; margin-bottom: 6px; display: block; font-size: 0.88rem; color: var(--text-main);">Status Saat Ini</label>
+                            <select id="modal-status" class="form-control" required style="width:100%; padding:10px; border:1px solid var(--border-color); border-radius:6px; font-size:0.9rem; background-color: var(--white);">
+                                <option value="">Pilih Status...</option>
+                                <option value="Bekerja">Bekerja</option>
+                                <option value="Wirausaha">Wirausaha</option>
+                                <option value="Melanjutkan Studi">Melanjutkan Studi</option>
+                                <option value="Bekerja sambil Studi">Bekerja sambil Studi</option>
+                                <option value="Wirausaha sambil Studi">Wirausaha sambil Studi</option>
+                                <option value="Sedang Mencari Kerja">Sedang Mencari Kerja</option>
+                                <option value="Tidak Bekerja / Mengurus Rumah Tangga">Tidak Bekerja / Mengurus Rumah Tangga</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label style="font-weight: 600; margin-bottom: 6px; display: block; font-size: 0.88rem; color: var(--text-main);">Nama Tempat Kerja / Kampus / Usaha</label>
+                            <input type="text" id="modal-tempat-kerja" class="form-control" placeholder="Contoh: PT Semen Indonesia / Universitas Airlangga" style="width:100%; padding:10px; border:1px solid var(--border-color); border-radius:6px; font-size:0.9rem;">
+                        </div>
+                        <div>
+                            <label style="font-weight: 600; margin-bottom: 6px; display: block; font-size: 0.88rem; color: var(--text-main);">Jabatan / Jenis Pekerjaan</label>
+                            <select id="modal-jabatan" class="form-control" onchange="handleModalSelectChange('modal-jabatan', 'modal-jabatan-custom')" style="width:100%; padding:10px; border:1px solid var(--border-color); border-radius:6px; font-size:0.9rem; background-color: var(--white);">
+                                <option value="">Pilih Jabatan...</option>
+                                <option value="Admin / Staf Perkantoran">Admin / Staf Perkantoran</option>
+                                <option value="Agen / Pemasar / Sales">Agen / Pemasar / Sales</option>
+                                <option value="Barista / Pramusaji">Barista / Pramusaji</option>
+                                <option value="Editor / Desainer / Kreatif">Editor / Desainer / Kreatif</option>
+                                <option value="Kasir / Pramuniaga Toko">Kasir / Pramuniaga Toko</option>
+                                <option value="Kurir / Driver / Sopir">Kurir / Driver / Sopir</option>
+                                <option value="Mekanik / Montir / Teknisi">Mekanik / Montir / Teknisi</option>
+                                <option value="Operator Mesin / Pabrik">Operator Mesin / Pabrik</option>
+                                <option value="Pegawai Swasta Umum">Pegawai Swasta Umum</option>
+                                <option value="Pekerja Kasar / Buruh Harian">Pekerja Kasar / Buruh Harian</option>
+                                <option value="Pengajar / Guru / Instruktur">Pengajar / Guru / Instruktur</option>
+                                <option value="Tenaga Medis / Kesehatan">Tenaga Medis / Kesehatan</option>
+                                <option value="Wiraswasta / Pemilik Usaha">Wiraswasta / Pemilik Usaha</option>
+                                <option value="Mahasiswa / Pelajar">Mahasiswa / Pelajar</option>
+                                <option value="Lainnya (Isi Manual)">Lainnya (Isi Manual)</option>
+                            </select>
+                            <input type="text" id="modal-jabatan-custom" class="form-control" placeholder="Ketik Jabatan Manual..." style="width:100%; padding:10px; border:1px solid var(--border-color); border-radius:6px; font-size:0.9rem; margin-top:8px; display:none;">
+                        </div>
+                        <div>
+                            <label style="font-weight: 600; margin-bottom: 6px; display: block; font-size: 0.88rem; color: var(--text-main);">Sektor Usaha / Bidang</label>
+                            <select id="modal-sektor" class="form-control" onchange="handleModalSelectChange('modal-sektor', 'modal-sektor-custom')" style="width:100%; padding:10px; border:1px solid var(--border-color); border-radius:6px; font-size:0.9rem; background-color: var(--white);">
+                                <option value="">Pilih Sektor...</option>
+                                <option value="Perdagangan Ritel / Grosir">Perdagangan Ritel / Grosir</option>
+                                <option value="Otomotif / Bengkel">Otomotif / Bengkel</option>
+                                <option value="Makanan dan Minuman (F&B)">Makanan dan Minuman (F&B)</option>
+                                <option value="Transportasi / Logistik">Transportasi / Logistik</option>
+                                <option value="Teknologi Informasi / Komunikasi">Teknologi Informasi / Komunikasi</option>
+                                <option value="Jasa Keuangan / Perbankan">Jasa Keuangan / Perbankan</option>
+                                <option value="Industri Pengolahan / Pabrik">Industri Pengolahan / Pabrik</option>
+                                <option value="Konstruksi / Bangunan">Konstruksi / Bangunan</option>
+                                <option value="Pertanian / Perikanan">Pertanian / Perikanan</option>
+                                <option value="Pendidikan / Sosial">Pendidikan / Sosial</option>
+                                <option value="Kesehatan / Kecantikan">Kesehatan / Kecantikan</option>
+                                <option value="Lainnya (Isi Manual)">Lainnya (Isi Manual)</option>
+                            </select>
+                            <input type="text" id="modal-sektor-custom" class="form-control" placeholder="Ketik Sektor Manual..." style="width:100%; padding:10px; border:1px solid var(--border-color); border-radius:6px; font-size:0.9rem; margin-top:8px; display:none;">
+                        </div>
+                        <div>
+                            <label style="font-weight: 600; margin-bottom: 6px; display: block; font-size: 0.88rem; color: var(--text-main);">Lokasi Kerja (Kota/Kabupaten)</label>
+                            <input type="text" id="modal-lokasi-kerja" class="form-control" placeholder="Contoh: Banyuwangi / Surabaya" style="width:100%; padding:10px; border:1px solid var(--border-color); border-radius:6px; font-size:0.9rem;">
+                        </div>
+                        <div>
+                            <label style="font-weight: 600; margin-bottom: 6px; display: block; font-size: 0.88rem; color: var(--text-main);">Keselarasan Jurusan</label>
+                            <select id="modal-keselarasan" class="form-control" style="width:100%; padding:10px; border:1px solid var(--border-color); border-radius:6px; font-size:0.9rem; background-color: var(--white);">
+                                <option value="">Pilih...</option>
+                                <option value="Sangat Selaras">Sangat Selaras</option>
+                                <option value="Selaras">Selaras</option>
+                                <option value="Tidak Selaras">Tidak Selaras</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label style="font-weight: 600; margin-bottom: 6px; display: block; font-size: 0.88rem; color: var(--text-main);">Rentang Pendapatan</label>
+                            <select id="modal-pendapatan" class="form-control" style="width:100%; padding:10px; border:1px solid var(--border-color); border-radius:6px; font-size:0.9rem; background-color: var(--white);">
+                                <option value="">Pilih...</option>
+                                <option value="< 500.000">&lt; 500.000</option>
+                                <option value="500.000 - 1.000.000">500.000 - 1.000.000</option>
+                                <option value="1.000.000 - 2.000.000">1.000.000 - 2.000.000</option>
+                                <option value="2.000.000 - 3.000.000">2.000.000 - 3.000.000</option>
+                                <option value="3.000.000 - 4.000.000">3.000.000 - 4.000.000</option>
+                                <option value="4.000.000 - 5.000.000">4.000.000 - 5.000.000</option>
+                                <option value="> 5.000.000">&gt; 5.000.000</option>
+                            </select>
+                        </div>
+                        <div style="grid-column: 1 / -1;">
+                            <label style="font-weight: 600; margin-bottom: 6px; display: block; font-size: 0.88rem; color: var(--text-main);">Keterangan Tambahan</label>
+                            <textarea id="modal-keterangan" class="form-control" rows="3" placeholder="Informasi tambahan lainnya..." style="width:100%; padding:10px; border:1px solid var(--border-color); border-radius:6px; font-size:0.9rem; font-family:inherit;"></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Footer Aksi -->
+                <div style="margin-top: 25px; text-align: right; padding-top: 15px; border-top: 1px solid var(--border-color); display:flex; justify-content:flex-end; gap:10px;">
+                    <button type="button" class="btn btn-outline" onclick="closeEditModal()" style="border: 1px solid #cbd5e1; color: var(--text-muted); background:var(--white);">Batal</button>
+                    <button type="submit" class="btn btn-primary" style="background-color: var(--primary); border-color: var(--primary); color: var(--white);"><i class="fas fa-save" style="margin-right:6px;"></i>Simpan</button>
                 </div>
             </form>
         </div>
@@ -783,6 +848,34 @@
             });
 
             renderTableData(filtered);
+
+            // Periksa parameter query untuk otomatisasi buka modal edit
+            const urlParams = new URLSearchParams(window.location.search);
+            const editNisnParam = urlParams.get('edit_nisn');
+            const editNamaParam = urlParams.get('edit_nama');
+            
+            if (editNisnParam || editNamaParam) {
+                const tbody = document.querySelector('.data-table tbody');
+                const rows = tbody.querySelectorAll('tr');
+                for (let row of rows) {
+                    const nisnCell = row.querySelector('[data-key="NISN"]');
+                    const namaCell = row.querySelector('[data-key="NAMA_LENGKAP"]');
+                    
+                    const matchNisn = editNisnParam && nisnCell && nisnCell.innerText.trim() === editNisnParam;
+                    const matchNama = editNamaParam && namaCell && namaCell.innerText.trim().toUpperCase() === editNamaParam.toUpperCase();
+                    
+                    if (matchNisn || matchNama) {
+                        // Bersihkan parameter edit dari URL agar tidak otomatis terbuka kembali saat reload berikutnya
+                        const cleanUrl = window.location.protocol + "//" + window.location.host + window.location.pathname + `?year=${selectedYear}&major=${selectedMajor}`;
+                        window.history.replaceState({ path: cleanUrl }, '', cleanUrl);
+                        
+                        setTimeout(() => {
+                            openEditModal(row);
+                        }, 100);
+                        break;
+                    }
+                }
+            }
         }
 
         // Fungsi untuk menggeser tabel (UX Improvement)
@@ -819,38 +912,433 @@
             document.querySelector('[data-jurusan="TKR"]').innerText = `${counts.TKR} Alumni`;
         }
 
-        // Fungsi Tambah Data Manual (Insert baris kosong ke tabel)
-        function openTambahModal() {
-            const rows = document.querySelectorAll('.data-table tbody tr');
-            const currentData = [];
+        // Fungsi Penanganan Modal & Jendela Edit Alumni
+        let activeEditRow = null;
+
+        function formatISOToIndonesian(isoStr) {
+            if (!isoStr || !/^\d{4}-\d{2}-\d{2}$/.test(isoStr)) return isoStr || '';
+            const parts = isoStr.split('-');
+            const months = ['JANUARI', 'FEBRUARI', 'MARET', 'APRIL', 'MEI', 'JUNI', 'JULI', 'AGUSTUS', 'SEPTEMBER', 'OKTOBER', 'NOVEMBER', 'DESEMBER'];
+            return `${parseInt(parts[2])} ${months[parseInt(parts[1])-1]} ${parts[0]}`;
+        }
+
+        function parseDateToISO(indonesianStr) {
+            if (!indonesianStr) return '';
+            const str = indonesianStr.trim().toUpperCase();
+            if (/^\d{4}-\d{2}-\d{2}$/.test(str)) return str;
+            const months = ['JANUARI', 'FEBRUARI', 'MARET', 'APRIL', 'MEI', 'JUNI', 'JULI', 'AGUSTUS', 'SEPTEMBER', 'OKTOBER', 'NOVEMBER', 'DESEMBER'];
+            const parts = str.split(/\s+/);
+            if (parts.length === 3) {
+                const day = parts[0].padStart(2, '0');
+                const monthIdx = months.indexOf(parts[1]);
+                if (monthIdx !== -1) {
+                    const month = String(monthIdx + 1).padStart(2, '0');
+                    const year = parts[2];
+                    return `${year}-${month}-${day}`;
+                }
+            }
+            return '';
+        }
+
+        function openEditModal(row) {
+            activeEditRow = row;
+            document.getElementById('modalTitle').innerText = "Edit Data Alumni";
             
-            rows.forEach(row => {
-                const rowData = {};
-                const cells = row.querySelectorAll('.editable-cell');
-                cells.forEach(cell => {
-                    const key = cell.getAttribute('data-key');
-                    if (cell.tagName === 'SELECT' || cell.tagName === 'INPUT') {
-                        rowData[key] = cell.value;
-                    } else {
-                        rowData[key] = cell.innerText.trim();
-                    }
-                });
-                if(Object.keys(rowData).length > 0 && (rowData.NAMA_LENGKAP || rowData.NISN || rowData.NIK)) {
-                    currentData.push(rowData);
+            // Ambil data dari baris tabel
+            const data = {};
+            const cells = row.querySelectorAll('.editable-cell');
+            cells.forEach(cell => {
+                const key = cell.getAttribute('data-key');
+                if (cell.tagName === 'SELECT' || cell.tagName === 'INPUT') {
+                    data[key] = cell.value;
+                } else {
+                    data[key] = cell.innerText.trim();
                 }
             });
 
-            // Tambahkan baris kosong di posisi paling atas
-            currentData.unshift({});
-            renderTableData(currentData);
+            // Isi kolom-kolom form
+            document.getElementById('modal-nama').value = data['NAMA_LENGKAP'] || '';
+            document.getElementById('modal-nisn').value = data['NISN'] || '';
+            document.getElementById('modal-nik').value = data['NIK'] || '';
+            document.getElementById('modal-jk').value = data['JENIS_KELAMIN'] || '';
+            document.getElementById('modal-tempat-lahir').value = data['TEMPAT_LAHIR'] || '';
+            document.getElementById('modal-tanggal-lahir').value = parseDateToISO(data['TANGGAL_LAHIR']);
+            document.getElementById('modal-agama').value = data['AGAMA'] || 'ISLAM';
+            document.getElementById('modal-kompetensi').value = data['KOMPETENSI_KEAHLIAN'] || '';
+            document.getElementById('modal-tahun-lulus').value = data['TAHUN_LULUS'] || '';
+            document.getElementById('modal-alamat').value = data['ALAMAT'] || '';
+            document.getElementById('modal-kota').value = data['KOTA_KAB'] || '';
+            document.getElementById('modal-hp').value = data['NO_HP_WA'] || '';
+            document.getElementById('modal-email').value = data['EMAIL_AKTIF'] || '';
+            
+            // Status & Tempat Kerja
+            document.getElementById('modal-status').value = data['STATUS_UTAMA'] || '';
+            document.getElementById('modal-tempat-kerja').value = data['NAMA_TEMPAT_KERJA'] || '';
+            
+            // Jabatan Pekerjaan (Predefined vs Custom)
+            const jabatanVal = data['JABATAN_PEKERJAAN'] || '';
+            const modalJabatan = document.getElementById('modal-jabatan');
+            const modalJabatanCustom = document.getElementById('modal-jabatan-custom');
+            
+            let hasPredefinedJabatan = false;
+            for (let i = 0; i < modalJabatan.options.length; i++) {
+                if (modalJabatan.options[i].value === jabatanVal) {
+                    hasPredefinedJabatan = true;
+                    break;
+                }
+            }
+            
+            if (jabatanVal && !hasPredefinedJabatan && jabatanVal !== 'Pilih...' && jabatanVal !== '-') {
+                modalJabatan.value = "Lainnya (Isi Manual)";
+                modalJabatanCustom.value = jabatanVal;
+                modalJabatanCustom.style.display = 'block';
+            } else {
+                modalJabatan.value = jabatanVal;
+                modalJabatanCustom.value = '';
+                modalJabatanCustom.style.display = 'none';
+            }
+            
+            // Sektor Usaha (Predefined vs Custom)
+            const sektorVal = data['SEKTOR_USAHA_BIDANG'] || '';
+            const modalSektor = document.getElementById('modal-sektor');
+            const modalSektorCustom = document.getElementById('modal-sektor-custom');
+            
+            let hasPredefinedSektor = false;
+            for (let i = 0; i < modalSektor.options.length; i++) {
+                if (modalSektor.options[i].value === sektorVal) {
+                    hasPredefinedSektor = true;
+                    break;
+                }
+            }
+            
+            if (sektorVal && !hasPredefinedSektor && sektorVal !== 'Pilih...' && sektorVal !== '-') {
+                modalSektor.value = "Lainnya (Isi Manual)";
+                modalSektorCustom.value = sektorVal;
+                modalSektorCustom.style.display = 'block';
+            } else {
+                modalSektor.value = sektorVal;
+                modalSektorCustom.value = '';
+                modalSektorCustom.style.display = 'none';
+            }
+            
+            document.getElementById('modal-lokasi-kerja').value = data['LOKASI_KERJA_KOTA'] || '';
+            document.getElementById('modal-keselarasan').value = data['KESELARASAN_JURUSAN'] || '';
+            document.getElementById('modal-pendapatan').value = data['RENTANG_PENDAPATAN'] || '';
+            document.getElementById('modal-keterangan').value = data['KETERANGAN_TAMBAHAN'] || '';
+            
+            switchModalTab('tab-pribadi');
+            document.getElementById('modalEditAlumni').style.display = 'flex';
         }
 
-        function closeTambahModal() {
-            // Tidak dipakai lagi
+        function openTambahModal() {
+            activeEditRow = null;
+            document.getElementById('modalTitle').innerText = "Tambah Data Alumni Baru";
+            document.getElementById('formEditAlumni').reset();
+            
+            document.getElementById('modal-jabatan-custom').style.display = 'none';
+            document.getElementById('modal-sektor-custom').style.display = 'none';
+            
+            document.getElementById('modal-kompetensi').value = selectedMajor === 'TKR' ? 'TKRO' : (selectedMajor || '');
+            document.getElementById('modal-tahun-lulus').value = selectedYear || '';
+            document.getElementById('modal-agama').value = 'ISLAM';
+            
+            switchModalTab('tab-pribadi');
+            document.getElementById('modalEditAlumni').style.display = 'flex';
         }
-        function submitDataAlumni(e) {
+
+        function closeEditModal() {
+            document.getElementById('modalEditAlumni').style.display = 'none';
+            activeEditRow = null;
+        }
+
+        function switchModalTab(tabId) {
+            const modal = document.getElementById('modalEditAlumni');
+            modal.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            modal.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            
+            const btn = modal.querySelector(`button[onclick*="${tabId}"]`);
+            if (btn) btn.classList.add('active');
+            
+            const content = document.getElementById(tabId);
+            if (content) content.classList.add('active');
+        }
+
+        function handleModalSelectChange(selectId, customInputId) {
+            const selectVal = document.getElementById(selectId).value;
+            const customInput = document.getElementById(customInputId);
+            if (selectVal === 'Lainnya (Isi Manual)') {
+                customInput.style.display = 'block';
+                customInput.focus();
+            } else {
+                customInput.style.display = 'none';
+            }
+        }
+
+        async function submitEditForm(e) {
             e.preventDefault();
+            
+            const nama = document.getElementById('modal-nama').value.trim().toUpperCase();
+            const nisn = document.getElementById('modal-nisn').value.trim();
+            const nik = document.getElementById('modal-nik').value.trim();
+            const jk = document.getElementById('modal-jk').value;
+            const tempatLahir = document.getElementById('modal-tempat-lahir').value.trim().toUpperCase();
+            const tglLahirISO = document.getElementById('modal-tanggal-lahir').value;
+            const tglLahirIndo = formatISOToIndonesian(tglLahirISO);
+            const agama = document.getElementById('modal-agama').value;
+            const kompetensi = document.getElementById('modal-kompetensi').value;
+            const tahunLulus = document.getElementById('modal-tahun-lulus').value;
+            const alamat = document.getElementById('modal-alamat').value.trim();
+            const kota = document.getElementById('modal-kota').value.trim();
+            const hp = document.getElementById('modal-hp').value.trim();
+            const email = document.getElementById('modal-email').value.trim();
+            const status = document.getElementById('modal-status').value;
+            const tempatKerja = document.getElementById('modal-tempat-kerja').value.trim();
+            
+            let jabatan = document.getElementById('modal-jabatan').value;
+            if (jabatan === 'Lainnya (Isi Manual)') {
+                jabatan = document.getElementById('modal-jabatan-custom').value.trim();
+            }
+            
+            let sektor = document.getElementById('modal-sektor').value;
+            if (sektor === 'Lainnya (Isi Manual)') {
+                sektor = document.getElementById('modal-sektor-custom').value.trim();
+            }
+            
+            const lokasiKerja = document.getElementById('modal-lokasi-kerja').value.trim();
+            const keselarasan = document.getElementById('modal-keselarasan').value;
+            const pendapatan = document.getElementById('modal-pendapatan').value;
+            const keterangan = document.getElementById('modal-keterangan').value.trim();
+            
+            const rowData = {
+                NAMA_LENGKAP: nama,
+                NISN: nisn,
+                NIK: nik,
+                JENIS_KELAMIN: jk,
+                TEMPAT_LAHIR: tempatLahir,
+                TANGGAL_LAHIR: tglLahirIndo,
+                AGAMA: agama,
+                KOMPETENSI_KEAHLIAN: kompetensi,
+                TAHUN_LULUS: tahunLulus,
+                ALAMAT: alamat,
+                KOTA_KAB: kota,
+                NO_HP_WA: hp,
+                EMAIL_AKTIF: email,
+                STATUS_UTAMA: status,
+                NAMA_TEMPAT_KERJA: tempatKerja,
+                JABATAN_PEKERJAAN: jabatan,
+                SEKTOR_USAHA_BIDANG: sektor,
+                LOKASI_KERJA_KOTA: lokasiKerja,
+                KESELARASAN_JURUSAN: keselarasan,
+                RENTANG_PENDAPATAN: pendapatan,
+                KETERANGAN_TAMBAHAN: keterangan
+            };
+            
+            if (activeEditRow) {
+                updateRowWithData(activeEditRow, rowData);
+            } else {
+                const tbody = document.querySelector('.data-table tbody');
+                const rowCount = tbody.querySelectorAll('tr').length;
+                const tr = document.createElement('tr');
+                tbody.appendChild(tr);
+                updateRowWithData(tr, rowData);
+                tr.querySelector('.freeze-col-1').innerText = rowCount + 1;
+            }
+            
+            closeEditModal();
+            await saveData();
         }
+
+        function updateRowWithData(row, data) {
+            const forcedMajor = selectedMajor === 'TKR' ? 'TKRO' : selectedMajor;
+            const forcedYear = selectedYear;
+
+            if (!data.TAHUN_LULUS && forcedYear) data.TAHUN_LULUS = forcedYear;
+            if (!data.KOMPETENSI_KEAHLIAN && forcedMajor) data.KOMPETENSI_KEAHLIAN = forcedMajor;
+
+            const jkVal = data.JENIS_KELAMIN === 'L' || data.JENIS_KELAMIN === 'Laki-laki' ? 'L' : (data.JENIS_KELAMIN === 'P' || data.JENIS_KELAMIN === 'Perempuan' ? 'P' : '');
+            
+            const predefinedJabatan = ["Admin / Staf Perkantoran", "Agen / Pemasar / Sales", "Barista / Pramusaji", "Editor / Desainer / Kreatif", "Kasir / Pramuniaga Toko", "Kurir / Driver / Sopir", "Mekanik / Montir / Teknisi", "Operator Mesin / Pabrik", "Pegawai Swasta Umum", "Pekerja Kasar / Buruh Harian", "Pengajar / Guru / Instruktur", "Tenaga Medis / Kesehatan", "Wiraswasta / Pemilik Usaha", "Mahasiswa / Pelajar", "Lainnya (Isi Manual)", "", "Pilih...", "-"];
+            const isJabatanCustom = data.JABATAN_PEKERJAAN && !predefinedJabatan.includes(data.JABATAN_PEKERJAAN);
+
+            const predefinedSektor = ["Perdagangan Ritel / Grosir", "Otomotif / Bengkel", "Makanan dan Minuman (F&B)", "Transportasi / Logistik", "Teknologi Informasi / Komunikasi", "Jasa Keuangan / Perbankan", "Industri Pengolahan / Pabrik", "Konstruksi / Bangunan", "Pertanian / Perikanan", "Pendidikan / Sosial", "Kesehatan / Kecantikan", "Lainnya (Isi Manual)", "", "Pilih...", "-"];
+            const isSektorCustom = data.SEKTOR_USAHA_BIDANG && !predefinedSektor.includes(data.SEKTOR_USAHA_BIDANG);
+
+            row.innerHTML = `
+                <td class="freeze-col-1">${row.querySelector('.freeze-col-1') ? row.querySelector('.freeze-col-1').innerText : '1'}</td>
+                <td contenteditable="true" class="freeze-col-2 editable-cell" data-key="NAMA_LENGKAP" style="font-weight: 600; color: var(--primary-dark);">${(data.NAMA_LENGKAP || '').toUpperCase()}</td>
+                <td contenteditable="true" class="editable-cell" data-key="NISN">${data.NISN || ''}</td>
+                <td contenteditable="true" class="editable-cell" data-key="NIK">${data.NIK || ''}</td>
+                <td style="padding: 0;">
+                    <select class="editable-cell" data-key="JENIS_KELAMIN" style="border:none; outline:none; background:transparent; font-family:inherit; font-size:inherit; color:inherit; width:100%; height:100%; cursor:pointer; padding: 15px;">
+                        <option value="L" ${jkVal === 'L' ? 'selected' : ''}>L</option>
+                        <option value="P" ${jkVal === 'P' ? 'selected' : ''}>P</option>
+                    </select>
+                </td>
+                <td contenteditable="true" class="editable-cell" data-key="TEMPAT_LAHIR">${(data.TEMPAT_LAHIR || '').toUpperCase()}</td>
+                <td contenteditable="true" class="editable-cell" data-key="TANGGAL_LAHIR">${data.TANGGAL_LAHIR || ''}</td>
+                <td class="editable-cell" data-key="AGAMA" style="cursor: default; font-weight: 500;">${(data.AGAMA || 'ISLAM').toUpperCase()}</td>
+                <td class="editable-cell" data-key="KOMPETENSI_KEAHLIAN" style="cursor: default; font-weight: 500; color: var(--primary-dark);">${data.KOMPETENSI_KEAHLIAN || forcedMajor}</td>
+                <td class="editable-cell" data-key="TAHUN_LULUS" style="cursor: default; font-weight: 500; color: var(--primary-dark);">${data.TAHUN_LULUS || forcedYear}</td>
+                <td contenteditable="true" class="editable-cell" data-key="ALAMAT">${data.ALAMAT || ''}</td>
+                <td contenteditable="true" class="editable-cell" data-key="KOTA_KAB">${data.KOTA_KAB || ''}</td>
+                <td contenteditable="true" class="editable-cell" data-key="NO_HP_WA">${data.NO_HP_WA || ''}</td>
+                <td contenteditable="true" class="editable-cell" data-key="EMAIL_AKTIF">${data.EMAIL_AKTIF || ''}</td>
+                <td style="padding: 0;">
+                    <select class="editable-cell" data-key="STATUS_UTAMA" style="border:none; outline:none; background:transparent; font-family:inherit; font-size:inherit; color:inherit; width:100%; height:100%; cursor:pointer; padding: 15px;">
+                        <option value="" ${!data.STATUS_UTAMA ? 'selected' : ''}>Pilih...</option>
+                        <option value="Bekerja" ${data.STATUS_UTAMA === 'Bekerja' ? 'selected' : ''}>Bekerja</option>
+                        <option value="Wirausaha" ${data.STATUS_UTAMA === 'Wirausaha' ? 'selected' : ''}>Wirausaha</option>
+                        <option value="Melanjutkan Studi" ${data.STATUS_UTAMA === 'Melanjutkan Studi' ? 'selected' : ''}>Melanjutkan Studi</option>
+                        <option value="Bekerja sambil Studi" ${data.STATUS_UTAMA === 'Bekerja sambil Studi' ? 'selected' : ''}>Bekerja sambil Studi</option>
+                        <option value="Wirausaha sambil Studi" ${data.STATUS_UTAMA === 'Wirausaha sambil Studi' ? 'selected' : ''}>Wirausaha sambil Studi</option>
+                        <option value="Sedang Mencari Kerja" ${data.STATUS_UTAMA === 'Sedang Mencari Kerja' ? 'selected' : ''}>Sedang Mencari Kerja</option>
+                        <option value="Tidak Bekerja / Mengurus Rumah Tangga" ${data.STATUS_UTAMA === 'Tidak Bekerja / Mengurus Rumah Tangga' ? 'selected' : ''}>Tidak Bekerja / Mengurus Rumah Tangga</option>
+                    </select>
+                </td>
+                <td contenteditable="true" class="editable-cell" data-key="NAMA_TEMPAT_KERJA">${data.NAMA_TEMPAT_KERJA || ''}</td>
+                <td style="padding: 0;">
+                    ${isJabatanCustom ? 
+                    `<input type="text" class="editable-cell" data-key="JABATAN_PEKERJAAN" value="${data.JABATAN_PEKERJAAN}" style="border:none; outline:none; background:transparent; font-family:inherit; font-size:inherit; color:inherit; width:100%; height:100%; padding: 15px;">` 
+                    : 
+                    `<select class="editable-cell" data-key="JABATAN_PEKERJAAN" onchange="checkManualInput(this)" style="border:none; outline:none; background:transparent; font-family:inherit; font-size:inherit; color:inherit; width:100%; height:100%; cursor:pointer; padding: 15px;">
+                        <option value="" ${!data.JABATAN_PEKERJAAN ? 'selected' : ''}>Pilih...</option>
+                        <option value="Admin / Staf Perkantoran" ${data.JABATAN_PEKERJAAN === 'Admin / Staf Perkantoran' ? 'selected' : ''}>Admin / Staf Perkantoran</option>
+                        <option value="Agen / Pemasar / Sales" ${data.JABATAN_PEKERJAAN === 'Agen / Pemasar / Sales' ? 'selected' : ''}>Agen / Pemasar / Sales</option>
+                        <option value="Barista / Pramusaji" ${data.JABATAN_PEKERJAAN === 'Barista / Pramusaji' ? 'selected' : ''}>Barista / Pramusaji</option>
+                        <option value="Editor / Desainer / Kreatif" ${data.JABATAN_PEKERJAAN === 'Editor / Desainer / Kreatif' ? 'selected' : ''}>Editor / Desainer / Kreatif</option>
+                        <option value="Kasir / Pramuniaga Toko" ${data.JABATAN_PEKERJAAN === 'Kasir / Pramuniaga Toko' ? 'selected' : ''}>Kasir / Pramuniaga Toko</option>
+                        <option value="Kurir / Driver / Sopir" ${data.JABATAN_PEKERJAAN === 'Kurir / Driver / Sopir' ? 'selected' : ''}>Kurir / Driver / Sopir</option>
+                        <option value="Mekanik / Montir / Teknisi" ${data.JABATAN_PEKERJAAN === 'Mekanik / Montir / Teknisi' ? 'selected' : ''}>Mekanik / Montir / Teknisi</option>
+                        <option value="Operator Mesin / Pabrik" ${data.JABATAN_PEKERJAAN === 'Operator Mesin / Pabrik' ? 'selected' : ''}>Operator Mesin / Pabrik</option>
+                        <option value="Pegawai Swasta Umum" ${data.JABATAN_PEKERJAAN === 'Pegawai Swasta Umum' ? 'selected' : ''}>Pegawai Swasta Umum</option>
+                        <option value="Pekerja Kasar / Buruh Harian" ${data.JABATAN_PEKERJAAN === 'Pekerja Kasar / Buruh Harian' ? 'selected' : ''}>Pekerja Kasar / Buruh Harian</option>
+                        <option value="Pengajar / Guru / Instruktur" ${data.JABATAN_PEKERJAAN === 'Pengajar / Guru / Instruktur' ? 'selected' : ''}>Pengajar / Guru / Instruktur</option>
+                        <option value="Tenaga Medis / Kesehatan" ${data.JABATAN_PEKERJAAN === 'Tenaga Medis / Kesehatan' ? 'selected' : ''}>Tenaga Medis / Kesehatan</option>
+                        <option value="Wiraswasta / Pemilik Usaha" ${data.JABATAN_PEKERJAAN === 'Wiraswasta / Pemilik Usaha' ? 'selected' : ''}>Wiraswasta / Pemilik Usaha</option>
+                        <option value="Mahasiswa / Pelajar" ${data.JABATAN_PEKERJAAN === 'Mahasiswa / Pelajar' ? 'selected' : ''}>Mahasiswa / Pelajar</option>
+                        <option value="Lainnya (Isi Manual)">Lainnya (Isi Manual)</option>
+                    </select>`}
+                </td>
+                <td style="padding: 0;">
+                    ${isSektorCustom ? 
+                    `<input type="text" class="editable-cell" data-key="SEKTOR_USAHA_BIDANG" value="${data.SEKTOR_USAHA_BIDANG}" style="border:none; outline:none; background:transparent; font-family:inherit; font-size:inherit; color:inherit; width:100%; height:100%; padding: 15px;">` 
+                    : 
+                    `<select class="editable-cell" data-key="SEKTOR_USAHA_BIDANG" onchange="checkManualInput(this)" style="border:none; outline:none; background:transparent; font-family:inherit; font-size:inherit; color:inherit; width:100%; height:100%; cursor:pointer; padding: 15px;">
+                        <option value="" ${!data.SEKTOR_USAHA_BIDANG ? 'selected' : ''}>Pilih...</option>
+                        <option value="Perdagangan Ritel / Grosir" ${data.SEKTOR_USAHA_BIDANG === 'Perdagangan Ritel / Grosir' ? 'selected' : ''}>Perdagangan Ritel / Grosir</option>
+                        <option value="Otomotif / Bengkel" ${data.SEKTOR_USAHA_BIDANG === 'Otomotif / Bengkel' ? 'selected' : ''}>Otomotif / Bengkel</option>
+                        <option value="Makanan dan Minuman (F&B)" ${data.SEKTOR_USAHA_BIDANG === 'Makanan dan Minuman (F&B)' ? 'selected' : ''}>Makanan dan Minuman (F&B)</option>
+                        <option value="Transportasi / Logistik" ${data.SEKTOR_USAHA_BIDANG === 'Transportasi / Logistik' ? 'selected' : ''}>Transportasi / Logistik</option>
+                        <option value="Teknologi Informasi / Komunikasi" ${data.SEKTOR_USAHA_BIDANG === 'Teknologi Informasi / Komunikasi' ? 'selected' : ''}>Teknologi Informasi / Komunikasi</option>
+                        <option value="Jasa Keuangan / Perbankan" ${data.SEKTOR_USAHA_BIDANG === 'Jasa Keuangan / Perbankan' ? 'selected' : ''}>Jasa Keuangan / Perbankan</option>
+                        <option value="Industri Pengolahan / Pabrik" ${data.SEKTOR_USAHA_BIDANG === 'Industri Pengolahan / Pabrik' ? 'selected' : ''}>Industri Pengolahan / Pabrik</option>
+                        <option value="Konstruksi / Bangunan" ${data.SEKTOR_USAHA_BIDANG === 'Konstruksi / Bangunan' ? 'selected' : ''}>Konstruksi / Bangunan</option>
+                        <option value="Pertanian / Perikanan" ${data.SEKTOR_USAHA_BIDANG === 'Pertanian / Perikanan' ? 'selected' : ''}>Pertanian / Perikanan</option>
+                        <option value="Pendidikan / Sosial" ${data.SEKTOR_USAHA_BIDANG === 'Pendidikan / Sosial' ? 'selected' : ''}>Pendidikan / Sosial</option>
+                        <option value="Kesehatan / Kecantikan" ${data.SEKTOR_USAHA_BIDANG === 'Kesehatan / Kecantikan' ? 'selected' : ''}>Kesehatan / Kecantikan</option>
+                        <option value="Lainnya (Isi Manual)">Lainnya (Isi Manual)</option>
+                    </select>`}
+                </td>
+                <td contenteditable="true" class="editable-cell" data-key="LOKASI_KERJA_KOTA">${data.LOKASI_KERJA_KOTA || ''}</td>
+                <td style="padding: 0;">
+                    <select class="editable-cell" data-key="KESELARASAN_JURUSAN" style="border:none; outline:none; background:transparent; font-family:inherit; font-size:inherit; color:inherit; width:100%; height:100%; cursor:pointer; padding: 15px;">
+                        <option value="" ${!data.KESELARASAN_JURUSAN ? 'selected' : ''}>Pilih...</option>
+                        <option value="Sangat Selaras" ${data.KESELARASAN_JURUSAN === 'Sangat Selaras' ? 'selected' : ''}>Sangat Selaras</option>
+                        <option value="Selaras" ${data.KESELARASAN_JURUSAN === 'Selaras' ? 'selected' : ''}>Selaras</option>
+                        <option value="Tidak Selaras" ${data.KESELARASAN_JURUSAN === 'Tidak Selaras' ? 'selected' : ''}>Tidak Selaras</option>
+                    </select>
+                </td>
+                <td style="padding: 0;">
+                    <select class="editable-cell" data-key="RENTANG_PENDAPATAN" style="border:none; outline:none; background:transparent; font-family:inherit; font-size:inherit; color:inherit; width:100%; height:100%; cursor:pointer; padding: 15px;">
+                        <option value="" ${!data.RENTANG_PENDAPATAN ? 'selected' : ''}>Pilih...</option>
+                        <option value="< 500.000" ${data.RENTANG_PENDAPATAN === '< 500.000' ? 'selected' : ''}>< 500.000</option>
+                        <option value="500.000 - 1.000.000" ${data.RENTANG_PENDAPATAN === '500.000 - 1.000.000' ? 'selected' : ''}>500.000 - 1.000.000</option>
+                        <option value="1.000.000 - 2.000.000" ${data.RENTANG_PENDAPATAN === '1.000.000 - 2.000.000' ? 'selected' : ''}>1.000.000 - 2.000.000</option>
+                        <option value="2.000.000 - 3.000.000" ${data.RENTANG_PENDAPATAN === '2.000.000 - 3.000.000' ? 'selected' : ''}>2.000.000 - 3.000.000</option>
+                        <option value="3.000.000 - 4.000.000" ${data.RENTANG_PENDAPATAN === '3.000.000 - 4.000.000' ? 'selected' : ''}>3.000.000 - 4.000.000</option>
+                        <option value="4.000.000 - 5.000.000" ${data.RENTANG_PENDAPATAN === '4.000.000 - 5.000.000' ? 'selected' : ''}>4.000.000 - 5.000.000</option>
+                        <option value="> 5.000.000" ${data.RENTANG_PENDAPATAN === '> 5.000.000' ? 'selected' : ''}>> 5.000.000</option>
+                    </select>
+                </td>
+                <td contenteditable="true" class="editable-cell" data-key="KETERANGAN_TAMBAHAN">${data.KETERANGAN_TAMBAHAN || ''}</td>
+                <td>
+                    <div style="display: flex; gap: 6px; justify-content: center;">
+                        <button class="btn btn-outline" style="padding: 4px 8px; font-size: 0.8rem; border-color: var(--primary); color: var(--primary);" onclick="openEditModal(this.closest('tr'))"><i class="fas fa-edit"></i></button>
+                        <button class="btn btn-outline" style="padding: 4px 8px; font-size: 0.8rem; border-color: #e74c3c; color: #e74c3c;" onclick="this.closest('tr').remove(); saveData();"><i class="fas fa-trash"></i></button>
+                    </div>
+                </td>
+            `;
+        }
+
+        // Event listener untuk navigasi keyboard ala Excel
+        document.addEventListener('keydown', function(e) {
+            const active = document.activeElement;
+            if (!active || !active.classList.contains('editable-cell')) return;
+
+            const isSelect = active.tagName === 'SELECT';
+            const isInput = active.tagName === 'INPUT';
+            const isTd = active.tagName === 'TD';
+
+            const row = active.closest('tr');
+            if (!row) return;
+            
+            const rowCells = Array.from(row.querySelectorAll('.editable-cell'));
+            const colIndex = rowCells.indexOf(active);
+            if (colIndex === -1) return;
+
+            const tbody = row.closest('tbody');
+            if (!tbody) return;
+            const rows = Array.from(tbody.querySelectorAll('tr'));
+            const rowIndex = rows.indexOf(row);
+
+            if (e.key === 'ArrowUp') {
+                if (isSelect) return;
+                e.preventDefault();
+                if (rowIndex > 0) {
+                    const targetRowCells = Array.from(rows[rowIndex - 1].querySelectorAll('.editable-cell'));
+                    if (targetRowCells[colIndex]) targetRowCells[colIndex].focus();
+                }
+            } else if (e.key === 'ArrowDown' || e.key === 'Enter') {
+                if (isSelect && e.key !== 'Enter') return;
+                e.preventDefault();
+                if (rowIndex < rows.length - 1) {
+                    const targetRowCells = Array.from(rows[rowIndex + 1].querySelectorAll('.editable-cell'));
+                    if (targetRowCells[colIndex]) targetRowCells[colIndex].focus();
+                } else if (e.key === 'Enter') {
+                    saveData();
+                }
+            } else if (e.key === 'ArrowLeft') {
+                if (isTd) {
+                    const selection = window.getSelection();
+                    if (selection.rangeCount > 0) {
+                        const range = selection.getRangeAt(0);
+                        if (range.startOffset !== 0 || range.endOffset !== 0) return;
+                    }
+                } else if (isInput) {
+                    if (active.selectionStart !== 0 || active.selectionEnd !== 0) return;
+                }
+                if (colIndex > 0) {
+                    e.preventDefault();
+                    rowCells[colIndex - 1].focus();
+                }
+            } else if (e.key === 'ArrowRight') {
+                if (isTd) {
+                    const selection = window.getSelection();
+                    if (selection.rangeCount > 0) {
+                        const range = selection.getRangeAt(0);
+                        const textLen = active.innerText.length;
+                        if (range.startOffset !== textLen || range.endOffset !== textLen) return;
+                    }
+                } else if (isInput) {
+                    const valLen = active.value.length;
+                    if (active.selectionStart !== valLen || active.selectionEnd !== valLen) return;
+                }
+                if (colIndex < rowCells.length - 1) {
+                    e.preventDefault();
+                    rowCells[colIndex + 1].focus();
+                }
+            }
+        });
 
         // Fungsi Import Excel (Menggunakan SheetJS)
         function handleImport(input) {
@@ -1046,7 +1534,10 @@
                     </td>
                     <td contenteditable="true" class="editable-cell" data-key="KETERANGAN_TAMBAHAN">${getVal('KETERANGAN_TAMBAHAN', 'Keterangan')}</td>
                     <td>
-                        <button class="btn btn-outline" style="padding: 4px 8px; font-size: 0.8rem; border-color: #e74c3c; color: #e74c3c;" onclick="this.closest('tr').remove()"><i class="fas fa-trash"></i></button>
+                        <div style="display: flex; gap: 6px; justify-content: center;">
+                            <button class="btn btn-outline" style="padding: 4px 8px; font-size: 0.8rem; border-color: var(--primary); color: var(--primary);" onclick="openEditModal(this.closest('tr'))"><i class="fas fa-edit"></i></button>
+                            <button class="btn btn-outline" style="padding: 4px 8px; font-size: 0.8rem; border-color: #e74c3c; color: #e74c3c;" onclick="this.closest('tr').remove(); saveData();"><i class="fas fa-trash"></i></button>
+                        </div>
                     </td>
                 `;
                 tbody.appendChild(tr);
@@ -1167,6 +1658,36 @@
             const tbody = document.querySelector('.data-table tbody');
             let originalTitle = document.getElementById('tableSubtitle') ? document.getElementById('tableSubtitle').innerHTML : '';
             
+            // PARSE QUERY PARAMETERS FIRST
+            const urlParams = new URLSearchParams(window.location.search);
+            const yearParam = urlParams.get('year');
+            const majorParam = urlParams.get('major');
+
+            if (yearParam && majorParam) {
+                selectedYear = yearParam;
+                selectedMajor = majorParam;
+                
+                // Tampilkan langsung tabel section
+                document.getElementById('angkatanSection').style.display = 'none';
+                document.getElementById('jurusanSection').style.display = 'none';
+                document.getElementById('tableSection').style.display = 'block';
+                
+                document.getElementById('tableTitle').innerText = `Data Alumni - Angkatan ${selectedYear}`;
+                
+                let majorFull = "";
+                if(selectedMajor === 'TKJ') majorFull = "Teknik Komputer dan Jaringan";
+                else if(selectedMajor === 'AKL') majorFull = "Akuntansi Keuangan Lembaga";
+                else if(selectedMajor === 'TKR') majorFull = "Teknik Kendaraan Ringan";
+                document.getElementById('tableSubtitle').innerText = `Menampilkan data master alumni untuk kompetensi keahlian ${majorFull}.`;
+
+                const btnBack = document.getElementById('btnBackToJurusan');
+                if (parseInt(selectedYear) < 2019) {
+                    btnBack.setAttribute('onclick', 'showAngkatanSelector()');
+                } else {
+                    btnBack.setAttribute('onclick', 'backToJurusanSection()');
+                }
+            }
+
             const savedData = localStorage.getItem("alumniData");
             if (document.getElementById('tableSubtitle')) {
                 document.getElementById('tableSubtitle').innerHTML = '<i class="fas fa-sync fa-spin" style="color: var(--primary);"></i> Sinkronisasi Cloud...';

@@ -283,6 +283,9 @@
                                     <th
                                         style="padding: 12px 15px; text-align: left; border-bottom: 1px solid var(--border);">
                                         PEKERJAAN / KAMPUS</th>
+                                    <th
+                                        style="padding: 12px 15px; text-align: center; border-bottom: 1px solid var(--border); width: 80px;">
+                                        AKSI</th>
                                 </tr>
                             </thead>
                             <tbody id="searchTableBody">
@@ -921,7 +924,7 @@
             });
 
             if (results.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="4" style="padding: 15px; text-align: center; color: var(--text-muted);">Tidak ada alumni dengan nama tersebut.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="5" style="padding: 15px; text-align: center; color: var(--text-muted);">Tidak ada alumni dengan nama tersebut.</td></tr>`;
             } else {
                 let html = '';
                 results.forEach(row => {
@@ -937,12 +940,32 @@
                     else if (status.toLowerCase().includes('usaha')) statusBadge = '<span style="background: rgba(241, 196, 15, 0.15); color: #f39c12; padding: 4px 10px; border-radius: 20px; font-size: 0.8rem; font-weight: bold;">Wirausaha</span>';
                     else statusBadge = `<span style="color: var(--text-muted); font-size: 0.85rem;">${status}</span>`;
 
+                    // Hitung parameter untuk halaman edit alumni
+                    let majorParam = 'TKJ'; // default fallback
+                    const jurLower = (jurusan || '').toLowerCase();
+                    if (jurLower.includes('tkj') || jurLower.includes('komputer') || jurLower.includes('jaringan')) {
+                        majorParam = 'TKJ';
+                    } else if (jurLower.includes('akl') || jurLower.includes('akuntansi') || jurLower.includes('keuangan')) {
+                        majorParam = 'AKL';
+                    } else if (jurLower.includes('tkr') || jurLower.includes('otomotif') || jurLower.includes('kendaraan') || jurLower.includes('tkro')) {
+                        majorParam = 'TKR';
+                    }
+
+                    let rawTahun = row['TAHUN_LULUS'] || row['Tahun Lulus'] || row['Angkatan'] || '';
+                    let nisnParam = row['NISN'] || '';
+                    let namaParam = encodeURIComponent(nama);
+
                     html += `
                     <tr style="border-bottom: 1px solid var(--border);">
                         <td style="padding: 12px 15px; font-weight: 600; color: var(--primary-dark);">${nama}</td>
                         <td style="padding: 12px 15px;">${tahun} <br> <span style="font-size: 0.8rem; color: var(--text-muted);">${jurusan}</span></td>
                         <td style="padding: 12px 15px;">${statusBadge}</td>
                         <td style="padding: 12px 15px;">${tempat}</td>
+                        <td style="padding: 12px 15px; text-align: center;">
+                            <a href="data_alumni.html?year=${rawTahun}&major=${majorParam}&edit_nisn=${nisnParam}&edit_nama=${namaParam}" class="btn" style="padding: 4px 8px; font-size: 0.8rem; border: 1px solid var(--primary); color: var(--primary); background: transparent; border-radius: 4px; display: inline-flex; align-items: center; justify-content: center; gap: 4px; text-decoration: none; transition: all 0.2s ease;">
+                                <i class="fas fa-edit"></i> Edit
+                            </a>
+                        </td>
                     </tr>`;
                 });
                 tbody.innerHTML = html;
