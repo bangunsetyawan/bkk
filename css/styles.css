@@ -613,18 +613,34 @@ a:hover {
     left: 0;
     z-index: 5;
     background-color: var(--white);
+    width: 65px;
+    min-width: 65px;
+    max-width: 65px;
+    text-align: center !important;
 }
 
 .freeze-col-2 {
     position: sticky;
-    left: 50px;
+    left: 65px; /* Lebar kolom AKSI */
     z-index: 5;
     background-color: var(--white);
-    box-shadow: 2px 0 5px rgba(0,0,0,0.04);
+    width: 45px;
+    min-width: 45px;
+    max-width: 45px;
+    text-align: center !important;
+}
+
+.freeze-col-3 {
+    position: sticky;
+    left: 110px; /* Lebar AKSI (65px) + NO (45px) */
+    z-index: 5;
+    background-color: var(--white);
+    border-right: 3px double #94a3b8 !important; /* Batas pemisah freeze column ala Excel */
 }
 
 .data-table tr:hover .freeze-col-1,
-.data-table tr:hover .freeze-col-2 {
+.data-table tr:hover .freeze-col-2,
+.data-table tr:hover .freeze-col-3 {
     background-color: #f8fafc !important;
 }
 

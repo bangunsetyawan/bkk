@@ -1080,7 +1080,7 @@
             }
 
             dataArray.forEach(row => {
-                let status = (row['STATUS_UTAMA'] || row['STATUS'] || row['Status'] || row['status'] || '').toLowerCase();
+                let status = (row['STATUS_UTAMA'] || row['STATUS'] || row['Status'] || row['status'] || '').toLowerCase().replace(/study/g, 'studi');
                 let year = parseInt(row['TAHUN_LULUS'] || row['Tahun Lulus'] || row['Angkatan']) || 0;
 
                 let isKerja = false, isKuliah = false, isUsaha = false, isBelum = false;
@@ -1360,7 +1360,7 @@
 
                     let statusBadge = '';
                     if (status.toLowerCase().includes('kerja')) statusBadge = '<span style="background: rgba(46, 204, 113, 0.12); color: #27ae60; padding: 3px 8px; border-radius: 20px; font-weight: bold;">Bekerja</span>';
-                    else if (status.toLowerCase().includes('kuliah') || status.toLowerCase().includes('studi')) statusBadge = '<span style="background: rgba(52, 152, 219, 0.12); color: #2980b9; padding: 3px 8px; border-radius: 20px; font-weight: bold;">Studi Lanjut</span>';
+                    else if (status.toLowerCase().includes('kuliah') || status.toLowerCase().includes('studi') || status.toLowerCase().includes('study')) statusBadge = '<span style="background: rgba(52, 152, 219, 0.12); color: #2980b9; padding: 3px 8px; border-radius: 20px; font-weight: bold;">Studi Lanjut</span>';
                     else if (status.toLowerCase().includes('usaha')) statusBadge = '<span style="background: rgba(241, 196, 15, 0.12); color: #f39c12; padding: 3px 8px; border-radius: 20px; font-weight: bold;">Wirausaha</span>';
                     else statusBadge = `<span style="color: var(--text-muted);">${status}</span>`;
 
