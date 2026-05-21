@@ -811,52 +811,52 @@
         <section class="stats-grid">
             <!-- Total Alumni -->
             <div class="stat-card">
-                <div class="stat-icon" style="background-color: rgba(92, 117, 90, 0.1); color: var(--sage-dark);">
+                <div class="stat-icon" style="background-color: rgba(30, 41, 59, 0.08); color: #1e293b;">
                     <i class="fas fa-graduation-cap"></i>
                 </div>
                 <div class="stat-info">
                     <h3>Total Lulusan</h3>
-                    <p id="statTotal">0</p>
+                    <p id="statTotal" style="font-weight: 700; color: #1e293b;">0</p>
                 </div>
             </div>
             <!-- Bekerja -->
             <div class="stat-card">
-                <div class="stat-icon" style="background-color: rgba(46, 204, 113, 0.1); color: #2ecc71;">
+                <div class="stat-icon" style="background-color: rgba(0, 180, 216, 0.12); color: #00b4d8;">
                     <i class="fas fa-briefcase"></i>
                 </div>
                 <div class="stat-info">
                     <h3>Bekerja</h3>
-                    <p id="statKerja" style="color: #27ae60;">0</p>
+                    <p id="statKerja" style="color: #00b4d8; font-weight: 700;">0</p>
                 </div>
             </div>
             <!-- Kuliah -->
             <div class="stat-card">
-                <div class="stat-icon" style="background-color: rgba(52, 152, 219, 0.1); color: #3498db;">
+                <div class="stat-icon" style="background-color: rgba(236, 72, 153, 0.12); color: #ec4899;">
                     <i class="fas fa-university"></i>
                 </div>
                 <div class="stat-info">
                     <h3>Studi Lanjut</h3>
-                    <p id="statKuliah" style="color: #2980b9;">0</p>
+                    <p id="statKuliah" style="color: #ec4899; font-weight: 700;">0</p>
                 </div>
             </div>
             <!-- Wirausaha -->
             <div class="stat-card">
-                <div class="stat-icon" style="background-color: rgba(241, 196, 15, 0.1); color: #f1c40f;">
+                <div class="stat-icon" style="background-color: rgba(234, 179, 8, 0.12); color: #eab308;">
                     <i class="fas fa-store"></i>
                 </div>
                 <div class="stat-info">
                     <h3>Wirausaha</h3>
-                    <p id="statUsaha" style="color: #f39c12;">0</p>
+                    <p id="statUsaha" style="color: #ca8a04; font-weight: 700;">0</p>
                 </div>
             </div>
             <!-- Belum Bekerja -->
             <div class="stat-card">
-                <div class="stat-icon" style="background-color: rgba(231, 76, 60, 0.1); color: #e74c3c;">
+                <div class="stat-icon" style="background-color: rgba(239, 68, 68, 0.12); color: #ef4444;">
                     <i class="fas fa-user-clock"></i>
                 </div>
                 <div class="stat-info">
                     <h3>Mencari Kerja</h3>
-                    <p id="statBelum" style="color: #c0392b;">0</p>
+                    <p id="statBelum" style="color: #ef4444; font-weight: 700;">0</p>
                 </div>
             </div>
         </section>
@@ -923,10 +923,17 @@
     <script src="js/supabase.js"></script>
     <!-- Chart.js CDN -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Chart.js Plugin Datalabels -->
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
     <!-- Global JS (Auth check, dsb) -->
     <script src="js/main.js"></script>
 
     <script>
+        // Register ChartDataLabels plugin globally
+        if (typeof ChartDataLabels !== 'undefined') {
+            Chart.register(ChartDataLabels);
+        }
+
         // Clear session on login page load
         sessionStorage.removeItem('role');
 
@@ -1140,7 +1147,8 @@
             const sumStatus = bekerja + kuliah + wirausaha + belum;
             const statusLabels = sumStatus === 0 ? ['Tidak Ada Data'] : ['Bekerja', 'Studi Lanjut', 'Wirausaha', 'Mencari Kerja'];
             const statusData = sumStatus === 0 ? [1] : [bekerja, kuliah, wirausaha, belum];
-            const statusColors = sumStatus === 0 ? ['#e0e0e0'] : ['#2ecc71', '#3498db', '#f1c40f', '#e74c3c'];
+            // Bright CMYK Palette (Cyan, Magenta, Yellow/Gold, Red)
+            const statusColors = sumStatus === 0 ? ['#e2e8f0'] : ['#00b4d8', '#ec4899', '#eab308', '#ef4444'];
 
             // Status Chart
             const ctxStatus = document.getElementById('statusChart').getContext('2d');
@@ -1152,16 +1160,22 @@
                     datasets: [{
                         data: statusData,
                         backgroundColor: statusColors,
-                        borderWidth: 0,
-                        hoverOffset: 10
+                        borderWidth: sumStatus === 0 ? 0 : 2,
+                        borderColor: '#ffffff',
+                        hoverOffset: 6,
+                        borderRadius: sumStatus === 0 ? 0 : 6,
+                        spacing: sumStatus === 0 ? 0 : 4
                     }]
                 },
                 options: {
                     maintainAspectRatio: false,
+                    cutout: '78%',
                     plugins: {
+                        datalabels: {
+                            display: false // Sembunyikan datalabels pada status doughnut chart agar tidak bertumpuk
+                        },
                         legend: { position: 'bottom', labels: { boxWidth: 12, font: { size: 10 } } }
-                    },
-                    cutout: '70%'
+                    }
                 }
             });
 
@@ -1170,34 +1184,140 @@
             const tkjData = [];
             const aklData = [];
             const tkrData = [];
+            const totalData = [];
 
             for (let y = 2017; y <= 2026; y++) {
                 years.push(y);
                 tkjData.push(majorCountsByYear[y].tkj);
                 aklData.push(majorCountsByYear[y].akl);
                 tkrData.push(majorCountsByYear[y].tkr);
+                totalData.push(majorCountsByYear[y].total);
             }
 
             const ctxTrend = document.getElementById('majorTrendChart').getContext('2d');
             if (trendChartObj) trendChartObj.destroy();
+
+            // Membuat gradasi warna bar premium (CMYK Terang)
+            const gradTkj = ctxTrend.createLinearGradient(0, 0, 0, 300);
+            gradTkj.addColorStop(0, '#00b4d8');
+            gradTkj.addColorStop(1, 'rgba(0, 180, 216, 0.15)');
+
+            const gradAkl = ctxTrend.createLinearGradient(0, 0, 0, 300);
+            gradAkl.addColorStop(0, '#ec4899');
+            gradAkl.addColorStop(1, 'rgba(236, 72, 153, 0.15)');
+
+            const gradTkr = ctxTrend.createLinearGradient(0, 0, 0, 300);
+            gradTkr.addColorStop(0, '#eab308');
+            gradTkr.addColorStop(1, 'rgba(234, 179, 8, 0.15)');
+
             trendChartObj = new Chart(ctxTrend, {
                 type: 'bar',
                 data: {
                     labels: years,
                     datasets: [
-                        { label: 'TKJ', data: tkjData, backgroundColor: '#3498db' },
-                        { label: 'AKL', data: aklData, backgroundColor: '#2ecc71' },
-                        { label: 'TKR', data: tkrData, backgroundColor: '#e67e22' }
+                        { 
+                            label: 'TKJ', 
+                            data: tkjData, 
+                            backgroundColor: gradTkj, 
+                            borderColor: '#00b4d8',
+                            borderWidth: 1.5,
+                            borderRadius: 6,
+                            borderSkipped: false
+                        },
+                        { 
+                            label: 'AKL', 
+                            data: aklData, 
+                            backgroundColor: gradAkl, 
+                            borderColor: '#ec4899',
+                            borderWidth: 1.5,
+                            borderRadius: 6,
+                            borderSkipped: false
+                        },
+                        { 
+                            label: 'TKR', 
+                            data: tkrData, 
+                            backgroundColor: gradTkr, 
+                            borderColor: '#eab308',
+                            borderWidth: 1.5,
+                            borderRadius: 6,
+                            borderSkipped: false
+                        },
+                        {
+                            label: 'Total Lulusan',
+                            type: 'line',
+                            data: totalData,
+                            borderColor: '#4f46e5',
+                            backgroundColor: '#4f46e5',
+                            borderWidth: 3,
+                            pointBackgroundColor: '#ffffff',
+                            pointBorderColor: '#4f46e5',
+                            pointBorderWidth: 2,
+                            pointRadius: 5,
+                            pointHoverRadius: 7,
+                            tension: 0.35,
+                            fill: false,
+                            datalabels: {
+                                display: function(context) {
+                                    return context.dataset.data[context.dataIndex] > 0;
+                                },
+                                color: '#ffffff',
+                                backgroundColor: '#4f46e5',
+                                borderRadius: 4,
+                                padding: { top: 4, bottom: 4, left: 6, right: 6 },
+                                font: { weight: 'bold', size: 10, family: 'Inter' },
+                                align: 'top',
+                                offset: 8
+                            }
+                        }
                     ]
                 },
                 options: {
                     maintainAspectRatio: false,
-                    scales: {
-                        y: { beginAtZero: true, grid: { display: false } },
-                        x: { grid: { display: false } }
-                    },
                     plugins: {
-                        legend: { position: 'bottom', labels: { boxWidth: 12, font: { size: 10 } } }
+                        datalabels: {
+                            display: function(context) {
+                                // Tampilkan angka kelulusan hanya jika nilainya > 0
+                                return context.dataset.data[context.dataIndex] > 0;
+                            },
+                            anchor: 'end',
+                            align: 'top',
+                            offset: 2,
+                            font: {
+                                family: 'Inter',
+                                size: 10,
+                                weight: '600'
+                            },
+                            color: '#475569'
+                        },
+                        legend: { 
+                            position: 'bottom',
+                            labels: {
+                                boxWidth: 12,
+                                padding: 15,
+                                usePointStyle: true,
+                                font: { family: 'Inter', size: 10, weight: '600' }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: { 
+                            beginAtZero: true, 
+                            grace: '25%', // Memberikan ruang di atas grafik agar datalabels tidak terpotong
+                            grid: { 
+                                color: '#e2e8f0',
+                                borderDash: [5, 5],
+                                drawBorder: false 
+                            },
+                            ticks: {
+                                font: { family: 'Inter', size: 11, weight: '500' }
+                            }
+                        },
+                        x: { 
+                            grid: { display: false },
+                            ticks: {
+                                font: { family: 'Inter', size: 11, weight: '500' }
+                            }
+                        }
                     }
                 }
             });
