@@ -427,7 +427,7 @@ a:hover {
     border: 1px solid var(--border-color);
     display: flex;
     align-items: center;
-    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
     position: relative;
     overflow: hidden;
 }
@@ -439,12 +439,96 @@ a:hover {
     top: 0;
     height: 100%;
     width: 4px;
-    background-color: var(--primary-light);
+    background-color: var(--card-theme-color, var(--primary-light));
 }
 
 .stat-card:hover {
-    transform: translateY(-3px);
+    transform: translateY(-4px);
     box-shadow: var(--shadow-hover);
+}
+
+.stat-card .stat-icon {
+    transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.stat-card:hover .stat-icon {
+    transform: scale(1.12) rotate(6deg);
+    background-color: var(--card-theme-color) !important;
+    color: var(--white) !important;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.08);
+}
+
+/* Dashboard Premium Layout Utilities */
+.dashboard-charts-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+    gap: 24px;
+    margin-top: 30px;
+}
+
+.dashboard-tables-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: 24px;
+    margin-top: 30px;
+    margin-bottom: 50px;
+}
+
+.search-container {
+    background: var(--white);
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 25px;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border-color);
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.search-container:focus-within {
+    border-color: var(--primary-light);
+    box-shadow: var(--shadow-hover);
+    transform: translateY(-1px);
+}
+
+.dashboard-toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.filter-year-card {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--white);
+    padding: 10px 18px;
+    border-radius: 10px;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border-color);
+    transition: all 0.3s ease;
+}
+
+.filter-year-card:hover {
+    border-color: var(--primary-light);
+}
+
+.filter-year-card select {
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    padding: 6px 12px;
+    outline: none;
+    font-family: inherit;
+    color: var(--text-main);
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.filter-year-card select:focus {
+    border-color: var(--primary-light);
 }
 
 .stat-icon {
@@ -578,6 +662,12 @@ a:hover {
     box-shadow: var(--shadow);
     margin-bottom: 24px;
     overflow: hidden;
+    transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.card:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-hover);
 }
 
 .card-header {
@@ -724,20 +814,26 @@ a:hover {
         font-size: 1rem !important;
         margin-right: 8px !important;
     }
-    .charts-grid-container {
+    .charts-grid-container,
+    .dashboard-charts-grid {
         display: grid !important;
         grid-template-columns: 1fr 1fr !important;
         gap: 15px !important;
         margin-top: 15px !important;
         page-break-inside: avoid !important;
     }
-    .recap-grid-container {
-        display: block !important;
-        margin-top: 25px !important;
+    .recap-grid-container,
+    .dashboard-tables-grid {
+        display: grid !important;
+        grid-template-columns: 1fr 1fr !important;
+        gap: 15px !important;
+        margin-top: 15px !important;
+        margin-bottom: 15px !important;
     }
-    .recap-grid-container > div {
+    .recap-grid-container > div,
+    .dashboard-tables-grid > div {
         width: 100% !important;
-        margin-bottom: 30px !important;
+        margin-bottom: 0 !important;
         page-break-inside: avoid !important;
     }
     .recap-table {
