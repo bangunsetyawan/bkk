@@ -204,72 +204,85 @@
         <section class="content px-3 pt-4 pb-5">
             <div class="container-fluid">
                 <!-- Title & Time -->
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; flex-wrap: wrap; gap: 15px;">
-                    <div>
-                        <h1 class="page-title" style="margin-bottom: 4px; letter-spacing: -0.02em;">Dashboard Analisis Alumni</h1>
-                        <p style="color: var(--text-muted); font-size: 0.9rem; margin: 0;">Sistem Pemantauan Karir & Tracer Study SMK NU Darussalam</p>
+                <div class="row mb-4 align-items-center">
+                    <div class="col-md-8">
+                        <h1 class="m-0 font-weight-bold text-dark" style="letter-spacing: -0.02em;">Dashboard Analisis Alumni</h1>
+                        <p class="text-muted mb-0">Sistem Pemantauan Karir & Tracer Study SMK NU Darussalam</p>
                     </div>
-                    <div style="font-size: 0.85rem; color: var(--text-muted); font-weight: 500; background: var(--white); padding: 10px 16px; border-radius: 10px; box-shadow: var(--shadow); border: 1px solid var(--border-color); display: flex; align-items: center; gap: 8px;">
-                        <i class="fas fa-sync-alt fa-spin" style="color: var(--primary-light);"></i> <span>Terakhir Sinkron:</span> <span id="lastUpdateTime" style="color: var(--primary-dark); font-weight: 700;">Memeriksa...</span>
-                    </div>
-                </div>
-
-                <!-- Quick Search Container -->
-                <div class="search-container">
-                    <h3 style="font-size: 0.95rem; font-weight: 700; color: var(--dark-slate); margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
-                        <i class="fas fa-search" style="color: var(--primary);"></i> Pencarian Cepat Alumni
-                    </h3>
-                    <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
-                        <div style="flex-grow: 1; position: relative;">
-                            <i class="fas fa-user" style="position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: var(--text-muted);"></i>
-                            <input type="text" id="searchAlumni" placeholder="Ketik nama alumni lalu tekan Enter atau klik Cari..." style="width: 100%; padding: 12px 16px 12px 42px; border: 1px solid var(--border-color); border-radius: 8px; font-size: 0.95rem; font-family: inherit; outline: none; transition: all 0.2s;">
+                    <div class="col-md-4 text-md-right mt-3 mt-md-0">
+                        <div class="d-inline-flex align-items-center bg-white p-2 rounded shadow-sm border">
+                            <i class="fas fa-sync-alt fa-spin text-primary mr-2"></i>
+                            <span class="text-muted mr-1">Terakhir Sinkron:</span>
+                            <span id="lastUpdateTime" class="font-weight-bold text-dark">Memeriksa...</span>
                         </div>
-                        <button class="btn btn-primary" onclick="searchAlumniData()" style="padding: 12px 24px; font-weight: 700; border-radius: 8px;">
-                            Cari Data
-                        </button>
-                    </div>
-                    <!-- Results Area -->
-                    <div id="searchResults" style="display: none; margin-top: 15px; max-height: 300px; overflow-y: auto; border: 1px solid var(--border-color); border-radius: 8px; box-shadow: inset 0 2px 8px rgba(0,0,0,0.02);">
-                        <table style="width: 100%; border-collapse: collapse; font-size: 0.9rem;">
-                            <thead style="background: var(--primary-bg); color: var(--primary-dark); position: sticky; top: 0; z-index: 2;">
-                                <tr>
-                                    <th style="padding: 12px 15px; text-align: left; border-bottom: 1px solid var(--border-color); font-weight: 700; font-size: 0.78rem; letter-spacing: 0.05em;">NAMA LENGKAP</th>
-                                    <th style="padding: 12px 15px; text-align: left; border-bottom: 1px solid var(--border-color); font-weight: 700; font-size: 0.78rem; letter-spacing: 0.05em;">TAHUN & JURUSAN</th>
-                                    <th style="padding: 12px 15px; text-align: left; border-bottom: 1px solid var(--border-color); font-weight: 700; font-size: 0.78rem; letter-spacing: 0.05em;">STATUS</th>
-                                    <th style="padding: 12px 15px; text-align: left; border-bottom: 1px solid var(--border-color); font-weight: 700; font-size: 0.78rem; letter-spacing: 0.05em;">PEKERJAAN / KAMPUS</th>
-                                    <th style="padding: 12px 15px; text-align: center; border-bottom: 1px solid var(--border-color); width: 100px; font-weight: 700; font-size: 0.78rem; letter-spacing: 0.05em;">AKSI</th>
-                                </tr>
-                            </thead>
-                            <tbody id="searchTableBody">
-                            </tbody>
-                        </table>
                     </div>
                 </div>
 
-                <!-- Integrated Toolbar Control -->
-                <div class="dashboard-toolbar">
-                    <div class="filter-year-card">
-                        <label for="yearFilter" style="font-weight: 700; color: var(--primary-dark); margin: 0; display: flex; align-items: center; gap: 8px; font-size: 0.9rem;">
-                            <i class="fas fa-filter" style="color: var(--primary);"></i> Filter Tahun:
-                        </label>
-                        <select id="yearFilter">
-                            <option value="all">Semua Tahun (Total)</option>
-                            <option value="2027">2027 (Mendatang)</option>
-                            <option value="2026">2026</option>
-                            <option value="2025">2025</option>
-                            <option value="2024">2024</option>
-                            <option value="2023">2023</option>
-                            <option value="2022">2022</option>
-                            <option value="2021">2021</option>
-                            <option value="2020">2020</option>
-                            <option value="2019">2019</option>
-                            <option value="2018">2018</option>
-                            <option value="2017">2017</option>
-                        </select>
+                <!-- Quick Search & Toolbar -->
+                <div class="row mb-4">
+                    <div class="col-lg-8">
+                        <div class="card card-outline card-primary h-100">
+                            <div class="card-header">
+                                <h3 class="card-title font-weight-bold"><i class="fas fa-search text-primary mr-2"></i> Pencarian Cepat Alumni</h3>
+                            </div>
+                            <div class="card-body">
+                                <div class="input-group mb-3">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text"><i class="fas fa-user"></i></span>
+                                    </div>
+                                    <input type="text" id="searchAlumni" class="form-control" placeholder="Ketik nama alumni lalu tekan Enter atau klik Cari...">
+                                    <span class="input-group-append">
+                                        <button type="button" class="btn btn-primary font-weight-bold" onclick="searchAlumniData()">Cari Data</button>
+                                    </span>
+                                </div>
+                                <!-- Results Area -->
+                                <div id="searchResults" style="display: none; max-height: 300px; overflow-y: auto;" class="border rounded">
+                                    <table class="table table-bordered table-hover table-head-fixed text-nowrap mb-0">
+                                        <thead class="bg-light">
+                                            <tr>
+                                                <th>NAMA LENGKAP</th>
+                                                <th>TAHUN & JURUSAN</th>
+                                                <th>STATUS</th>
+                                                <th>PEKERJAAN / KAMPUS</th>
+                                                <th class="text-center">AKSI</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="searchTableBody">
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <button class="btn btn-primary" onclick="downloadDashboardPDF()" style="background-color: var(--gold); border-color: var(--gold); color: var(--white); font-weight: 700; border-radius: 10px; padding: 10px 22px; box-shadow: 0 4px 14px rgba(197, 168, 128, 0.25);">
-                        <i class="fas fa-print"></i> Cetak Laporan PDF
-                    </button>
+                    <div class="col-lg-4 mt-3 mt-lg-0">
+                        <div class="card card-outline card-info h-100">
+                            <div class="card-header">
+                                <h3 class="card-title font-weight-bold"><i class="fas fa-tools text-info mr-2"></i> Kontrol Laporan</h3>
+                            </div>
+                            <div class="card-body d-flex flex-column justify-content-center">
+                                <div class="form-group">
+                                    <label for="yearFilter"><i class="fas fa-filter text-primary mr-1"></i> Filter Tahun Kelulusan:</label>
+                                    <select id="yearFilter" class="form-control">
+                                        <option value="all">Semua Tahun (Total)</option>
+                                        <option value="2027">2027 (Mendatang)</option>
+                                        <option value="2026">2026</option>
+                                        <option value="2025">2025</option>
+                                        <option value="2024">2024</option>
+                                        <option value="2023">2023</option>
+                                        <option value="2022">2022</option>
+                                        <option value="2021">2021</option>
+                                        <option value="2020">2020</option>
+                                        <option value="2019">2019</option>
+                                        <option value="2018">2018</option>
+                                        <option value="2017">2017</option>
+                                    </select>
+                                </div>
+                                <button class="btn btn-warning btn-block font-weight-bold text-white mt-auto" onclick="downloadDashboardPDF()">
+                                    <i class="fas fa-print mr-2"></i> Cetak Laporan PDF
+                                </button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -292,250 +305,214 @@
                         </tr>
                     </table>
                 </div>
-                <div class="stats-grid">
-                    <div class="stat-card" style="--card-theme-color: var(--dark-slate);">
-                        <div class="stat-icon" style="background-color: rgba(30, 41, 59, 0.08); color: var(--dark-slate);">
-                            <i class="fas fa-users"></i>
-                        </div>
-                        <div class="stat-info">
-                            <h3>Total Alumni</h3>
-                            <p style="font-weight: 700; color: var(--dark-slate);">0</p>
-                        </div>
-                    </div>
-
-                    <div class="stat-card" style="--card-theme-color: #00b4d8;">
-                        <div class="stat-icon" style="background-color: rgba(0, 180, 216, 0.12); color: #00b4d8;">
-                            <i class="fas fa-briefcase"></i>
-                        </div>
-                        <div class="stat-info">
-                            <h3>Bekerja</h3>
-                            <p style="color: #00b4d8; font-weight: 700;">0</p>
+                <!-- Stats Grid (AdminLTE Small Boxes) -->
+                <div class="row">
+                    <div class="col-lg-2 col-6">
+                        <div class="small-box bg-secondary">
+                            <div class="inner">
+                                <h3 id="statTotalAlumni">0</h3>
+                                <p>Total Alumni</p>
+                            </div>
+                            <div class="icon">
+                                <i class="fas fa-users"></i>
+                            </div>
                         </div>
                     </div>
-
-                    <div class="stat-card" style="--card-theme-color: #ec4899;">
-                        <div class="stat-icon" style="background-color: rgba(236, 72, 153, 0.12); color: #ec4899;">
-                            <i class="fas fa-graduation-cap"></i>
-                        </div>
-                        <div class="stat-info">
-                            <h3>Kuliah</h3>
-                            <p style="color: #ec4899; font-weight: 700;">0</p>
-                        </div>
-                    </div>
-
-                    <div class="stat-card" style="--card-theme-color: #eab308;">
-                        <div class="stat-icon" style="background-color: rgba(234, 179, 8, 0.12); color: #eab308;">
-                            <i class="fas fa-store"></i>
-                        </div>
-                        <div class="stat-info">
-                            <h3>Wirausaha</h3>
-                            <p style="color: #ca8a04; font-weight: 700;">0</p>
+                    <div class="col-lg-2 col-6">
+                        <div class="small-box bg-info">
+                            <div class="inner">
+                                <h3 id="statBekerja">0</h3>
+                                <p>Bekerja</p>
+                            </div>
+                            <div class="icon">
+                                <i class="fas fa-briefcase"></i>
+                            </div>
                         </div>
                     </div>
-
-                    <div class="stat-card" style="--card-theme-color: #ef4444;">
-                        <div class="stat-icon" style="background-color: rgba(239, 68, 68, 0.12); color: #ef4444;">
-                            <i class="fas fa-user-clock"></i>
+                    <div class="col-lg-3 col-6">
+                        <div class="small-box bg-pink" style="background-color: #e83e8c !important; color: white;">
+                            <div class="inner">
+                                <h3 id="statKuliah">0</h3>
+                                <p>Kuliah</p>
+                            </div>
+                            <div class="icon">
+                                <i class="fas fa-graduation-cap"></i>
+                            </div>
                         </div>
-                        <div class="stat-info">
-                            <h3>Belum Bekerja / Proses</h3>
-                            <p style="color: #ef4444; font-weight: 700;">0</p>
+                    </div>
+                    <div class="col-lg-2 col-6">
+                        <div class="small-box bg-warning">
+                            <div class="inner">
+                                <h3 id="statWirausaha">0</h3>
+                                <p>Wirausaha</p>
+                            </div>
+                            <div class="icon">
+                                <i class="fas fa-store"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-12">
+                        <div class="small-box bg-danger">
+                            <div class="inner">
+                                <h3 id="statBelumBekerja">0</h3>
+                                <p>Belum Bekerja / Proses</p>
+                            </div>
+                            <div class="icon">
+                                <i class="fas fa-user-clock"></i>
+                            </div>
                         </div>
                     </div>
                 </div>
 
                 <!-- Visual Charts Section -->
-                <div class="dashboard-charts-grid">
+                <div class="row">
                     <!-- Chart 1: Status -->
-                    <div class="card" style="margin-bottom: 0;">
-                        <div class="card-header">
-                            <h3><i class="fas fa-chart-pie" style="color: var(--primary);"></i> Distribusi Status Alumni</h3>
-                        </div>
-                        <div class="card-body" style="padding: 20px; display: flex; flex-direction: column; justify-content: space-between; min-height: 380px;">
-                            <div style="height: 220px; position: relative;">
-                                <canvas id="statusChart"></canvas>
-                                <!-- Label Tengah Modern -->
-                                <div class="chart-center-label" style="position: absolute; top: 48%; left: 50%; transform: translate(-50%, -50%); text-align: center; pointer-events: none;">
-                                    <span style="font-size: 2.4rem; font-weight: 800; color: var(--dark-slate); font-family: 'Plus Jakarta Sans', sans-serif; line-height: 1; display: block;" id="chartCenterValue">0</span>
-                                    <span style="font-size: 0.7rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.08em; display: block; margin-top: 4px;">Alumni</span>
-                                </div>
+                    <div class="col-lg-5">
+                        <div class="card card-outline card-success h-100">
+                            <div class="card-header">
+                                <h3 class="card-title font-weight-bold"><i class="fas fa-chart-pie text-success mr-2"></i> Distribusi Status Alumni</h3>
                             </div>
-                            <!-- Legenda Kustom Modern -->
-                            <div id="statusChartLegend" style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 15px; padding-top: 15px; border-top: 1px solid var(--border-color);">
-                                <!-- Diisi oleh JavaScript secara dinamis -->
+                            <div class="card-body">
+                                <div style="height: 250px; position: relative;">
+                                    <canvas id="statusChart"></canvas>
+                                    <!-- Label Tengah Modern -->
+                                    <div class="chart-center-label" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; pointer-events: none;">
+                                        <span style="font-size: 2rem; font-weight: 700; color: #343a40; display: block;" id="chartCenterValue">0</span>
+                                        <span style="font-size: 0.8rem; font-weight: 600; color: #6c757d; text-transform: uppercase;">Alumni</span>
+                                    </div>
+                                </div>
+                                <!-- Legenda Kustom Modern -->
+                                <div id="statusChartLegend" class="mt-4">
+                                    <!-- Diisi oleh JavaScript secara dinamis -->
+                                </div>
                             </div>
                         </div>
                     </div>
 
                     <!-- Chart 2: Jurusan -->
-                    <div class="card" style="margin-bottom: 0;">
-                        <div class="card-header">
-                            <h3><i class="fas fa-chart-bar" style="color: var(--primary);"></i> Tren Lulusan Per Jurusan</h3>
-                        </div>
-                        <div class="card-body" style="padding: 20px; min-height: 380px; display: flex; flex-direction: column; justify-content: center;">
-                            <div style="height: 320px; position: relative; width: 100%;">
-                                <canvas id="majorTrendChart"></canvas>
+                    <div class="col-lg-7 mt-3 mt-lg-0">
+                        <div class="card card-outline card-info h-100">
+                            <div class="card-header">
+                                <h3 class="card-title font-weight-bold"><i class="fas fa-chart-bar text-info mr-2"></i> Tren Lulusan Per Jurusan</h3>
+                            </div>
+                            <div class="card-body">
+                                <div style="height: 350px; position: relative; width: 100%;">
+                                    <canvas id="majorTrendChart"></canvas>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
 
                 <!-- Rekapitulasi Kiri & Kanan -->
-                <div class="dashboard-tables-grid">
+                <div class="row mt-4">
                     <!-- Kiri: Per Tahun -->
-                    <div class="card" style="margin-bottom: 0;">
-                        <div class="card-header">
-                            <h3><i class="fas fa-calendar-alt" style="color: var(--primary);"></i> Rekapitulasi Lulusan Per Tahun</h3>
-                        </div>
-                        <div class="card-body" style="padding: 15px;">
-                            <div style="overflow-x: auto;">
-                                <style>
-                                    .recap-table th,
-                                    .recap-table td {
-                                        border: 1px solid var(--border-color);
-                                        padding: 12px 15px;
-                                    }
-                                </style>
-                                <table class="recap-table" style="width: 100%; border-collapse: collapse; text-align: center; font-size: 0.95rem;">
-                                    <thead>
-                                        <tr style="background-color: var(--primary-bg); color: var(--primary-dark);">
-                                            <th style="text-align: left;">Tahun Lulus</th>
-                                            <th>Total Alumni</th>
-                                            <th style="color: #5c755a;">Bekerja</th>
-                                            <th style="color: #a88c62;">Kuliah</th>
-                                            <th style="color: #4b6049;">Wirausaha</th>
-                                            <th style="color: #ac6d6d;">Belum Bekerja</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="recapTableBody">
-                                        <tr style="border-bottom: 1px solid var(--border-color);">
-                                            <td style="padding: 12px 15px; text-align: left; font-weight: 600;">2027 (Mendatang)</td>
-                                            <td>0</td>
-                                            <td>0</td>
-                                            <td>0</td>
-                                            <td>0</td>
-                                            <td>0</td>
-                                        </tr>
-                                        <tr style="border-bottom: 1px solid var(--border-color);">
-                                            <td style="padding: 12px 15px; text-align: left; font-weight: 600;">2026</td>
-                                            <td>0</td>
-                                            <td>0</td>
-                                            <td>0</td>
-                                            <td>0</td>
-                                            <td>0</td>
-                                        </tr>
-                                        <tr style="border-bottom: 1px solid var(--border-color);">
-                                            <td style="padding: 12px 15px; text-align: left; font-weight: 600;">2025</td>
-                                            <td>0</td>
-                                            <td>0</td>
-                                            <td>0</td>
-                                            <td>0</td>
-                                            <td>0</td>
-                                        </tr>
-                                        <tr style="border-bottom: 1px solid var(--border-color);">
-                                            <td style="padding: 12px 15px; text-align: left; font-weight: 600;">2024</td>
-                                            <td>0</td>
-                                            <td>0</td>
-                                            <td>0</td>
-                                            <td>0</td>
-                                            <td>0</td>
-                                        </tr>
-                                        <tr style="border-bottom: 1px solid var(--border-color);">
-                                            <td style="padding: 12px 15px; text-align: left; font-weight: 600;">2023</td>
-                                            <td>0</td>
-                                            <td>0</td>
-                                            <td>0</td>
-                                            <td>0</td>
-                                            <td>0</td>
-                                        </tr>
-                                        <tr style="border-bottom: 1px solid var(--border-color);">
-                                            <td style="padding: 12px 15px; text-align: left; font-weight: 600;">2022</td>
-                                            <td>0</td>
-                                            <td>0</td>
-                                            <td>0</td>
-                                            <td>0</td>
-                                            <td>0</td>
-                                        </tr>
-                                        <tr style="border-bottom: 1px solid var(--border-color);">
-                                            <td style="padding: 12px 15px; text-align: left; font-weight: 600;">2021</td>
-                                            <td>0</td>
-                                            <td>0</td>
-                                            <td>0</td>
-                                            <td>0</td>
-                                            <td>0</td>
-                                        </tr>
-                                        <tr style="border-bottom: 1px solid var(--border-color);">
-                                            <td style="padding: 12px 15px; text-align: left; font-weight: 600;">2020</td>
-                                            <td>0</td>
-                                            <td>0</td>
-                                            <td>0</td>
-                                            <td>0</td>
-                                            <td>0</td>
-                                        </tr>
-                                        <tr style="border-bottom: 1px solid var(--border-color);">
-                                            <td style="padding: 12px 15px; text-align: left; font-weight: 600;">2019</td>
-                                            <td>0</td>
-                                            <td>0</td>
-                                            <td>0</td>
-                                            <td>0</td>
-                                            <td>0</td>
-                                        </tr>
-                                        <tr style="border-bottom: 1px solid var(--border-color);">
-                                            <td style="padding: 12px 15px; text-align: left; font-weight: 600;">2018</td>
-                                            <td>0</td>
-                                            <td>0</td>
-                                            <td>0</td>
-                                            <td>0</td>
-                                            <td>0</td>
-                                        </tr>
-                                        <tr>
-                                            <td style="text-align: left; font-weight: 600;">2017</td>
-                                            <td>0</td>
-                                            <td>0</td>
-                                            <td>0</td>
-                                            <td>0</td>
-                                            <td>0</td>
-                                        </tr>
-                                    </tbody>
-                                    <tfoot id="recapTableFoot">
-                                        <tr style="background-color: rgba(92, 117, 90, 0.15); font-weight: 700; color: var(--primary-dark);">
-                                            <td style="text-align: left;">TOTAL KESELURUHAN</td>
-                                            <td>0</td>
-                                            <td style="color: #27ae60;">0</td>
-                                            <td style="color: #2980b9;">0</td>
-                                            <td style="color: #f39c12;">0</td>
-                                            <td style="color: #e74c3c;">0</td>
-                                        </tr>
-                                    </tfoot>
-                                </table>
+                    <div class="col-lg-7">
+                        <div class="card card-outline card-primary h-100">
+                            <div class="card-header">
+                                <h3 class="card-title font-weight-bold"><i class="fas fa-calendar-alt text-primary mr-2"></i> Rekapitulasi Lulusan Per Tahun</h3>
+                            </div>
+                            <div class="card-body p-0">
+                                <div class="table-responsive">
+                                    <table class="table table-bordered table-hover text-center mb-0 recap-table">
+                                        <thead class="bg-light">
+                                            <tr>
+                                                <th class="text-left">Tahun Lulus</th>
+                                                <th>Total Alumni</th>
+                                                <th class="text-success">Bekerja</th>
+                                                <th class="text-info">Kuliah</th>
+                                                <th class="text-warning">Wirausaha</th>
+                                                <th class="text-danger">Belum Bekerja</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="recapTableBody">
+                                            <tr>
+                                                <td class="text-left font-weight-bold">2027 (Mendatang)</td>
+                                                <td>0</td><td>0</td><td>0</td><td>0</td><td>0</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="text-left font-weight-bold">2026</td>
+                                                <td>0</td><td>0</td><td>0</td><td>0</td><td>0</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="text-left font-weight-bold">2025</td>
+                                                <td>0</td><td>0</td><td>0</td><td>0</td><td>0</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="text-left font-weight-bold">2024</td>
+                                                <td>0</td><td>0</td><td>0</td><td>0</td><td>0</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="text-left font-weight-bold">2023</td>
+                                                <td>0</td><td>0</td><td>0</td><td>0</td><td>0</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="text-left font-weight-bold">2022</td>
+                                                <td>0</td><td>0</td><td>0</td><td>0</td><td>0</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="text-left font-weight-bold">2021</td>
+                                                <td>0</td><td>0</td><td>0</td><td>0</td><td>0</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="text-left font-weight-bold">2020</td>
+                                                <td>0</td><td>0</td><td>0</td><td>0</td><td>0</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="text-left font-weight-bold">2019</td>
+                                                <td>0</td><td>0</td><td>0</td><td>0</td><td>0</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="text-left font-weight-bold">2018</td>
+                                                <td>0</td><td>0</td><td>0</td><td>0</td><td>0</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="text-left font-weight-bold">2017</td>
+                                                <td>0</td><td>0</td><td>0</td><td>0</td><td>0</td>
+                                            </tr>
+                                        </tbody>
+                                        <tfoot id="recapTableFoot">
+                                            <tr class="bg-light font-weight-bold">
+                                                <td class="text-left">TOTAL KESELURUHAN</td>
+                                                <td>0</td>
+                                                <td class="text-success">0</td>
+                                                <td class="text-info">0</td>
+                                                <td class="text-warning">0</td>
+                                                <td class="text-danger">0</td>
+                                            </tr>
+                                        </tfoot>
+                                    </table>
+                                </div>
                             </div>
                         </div>
                     </div> <!-- Akhir Kiri -->
 
                     <!-- Kanan: Per Jurusan -->
-                    <div class="card" style="margin-bottom: 0;">
-                        <div class="card-header">
-                            <h3><i class="fas fa-th-list" style="color: var(--primary);"></i> Rekapitulasi Lulusan Per Jurusan</h3>
-                        </div>
-                        <div class="card-body" style="padding: 15px;">
-                            <div style="overflow-x: auto;">
-                                <table class="recap-table" style="width: 100%; border-collapse: collapse; text-align: center; font-size: 0.95rem;">
-                                    <thead>
-                                        <tr style="background-color: var(--primary-bg); color: var(--primary-dark);">
-                                            <th style="text-align: left;">Tahun Lulus</th>
-                                            <th style="color: #0284c7;">TKJ</th>
-                                            <th style="color: #db2777;">AKL</th>
-                                            <th style="color: #ca8a04;">TKR</th>
-                                            <th style="font-weight: 700;">TOTAL</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="majorRecapTableBody">
-                                        <!-- Data akan diisi oleh JS -->
-                                    </tbody>
-                                    <tfoot id="majorRecapTableFoot">
-                                        <!-- Total akan diisi oleh JS -->
-                                    </tfoot>
-                                </table>
+                    <div class="col-lg-5 mt-3 mt-lg-0">
+                        <div class="card card-outline card-warning h-100">
+                            <div class="card-header">
+                                <h3 class="card-title font-weight-bold"><i class="fas fa-th-list text-warning mr-2"></i> Rekapitulasi Lulusan Per Jurusan</h3>
+                            </div>
+                            <div class="card-body p-0">
+                                <div class="table-responsive">
+                                    <table class="table table-bordered table-hover text-center mb-0 recap-table">
+                                        <thead class="bg-light">
+                                            <tr>
+                                                <th class="text-left">Tahun Lulus</th>
+                                                <th style="color: #0284c7;">TKJ</th>
+                                                <th style="color: #db2777;">AKL</th>
+                                                <th style="color: #ca8a04;">TKR</th>
+                                                <th class="font-weight-bold">TOTAL</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="majorRecapTableBody">
+                                            <!-- Data akan diisi oleh JS -->
+                                        </tbody>
+                                        <tfoot id="majorRecapTableFoot" class="bg-light">
+                                            <!-- Total akan diisi oleh JS -->
+                                        </tfoot>
+                                    </table>
+                                </div>
                             </div>
                         </div>
                     </div> <!-- Akhir Kanan -->
@@ -563,27 +540,27 @@
                     </table>
                 </div>
 
-                <div class="card" style="margin-bottom: 0;">
+                <div class="card card-outline card-success mt-4">
                     <div class="card-header">
-                        <h3><i class="fas fa-handshake" style="color: var(--primary);"></i> Daftar Mitra Industri (Penyerapan Alumni)</h3>
+                        <h3 class="card-title font-weight-bold"><i class="fas fa-handshake text-success mr-2"></i> Daftar Mitra Industri (Penyerapan Alumni)</h3>
                     </div>
-                    <div class="card-body" style="padding: 15px;">
-                        <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 15px;" class="no-print">
+                    <div class="card-body p-0">
+                        <p class="text-muted p-3 mb-0 no-print">
                             Berikut adalah rekapitulasi nama tempat kerja/instansi dan jumlah penyerapan alumni berdasarkan database pelacakan.
                         </p>
-                        <div style="overflow-x: auto;">
-                            <table class="recap-table" style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.95rem;">
-                                <thead>
-                                    <tr style="background-color: var(--primary-bg); color: var(--primary-dark);">
-                                        <th style="width: 50px; text-align: center;">No</th>
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-hover text-left mb-0 recap-table">
+                                <thead class="bg-light">
+                                    <tr>
+                                        <th class="text-center" style="width: 50px;">No</th>
                                         <th>Nama Mitra / Tempat Kerja / Instansi</th>
-                                        <th style="width: 150px; text-align: center;">Jumlah Alumni</th>
+                                        <th class="text-center" style="width: 150px;">Jumlah Alumni</th>
                                         <th>Sektor Usaha</th>
                                         <th>Lokasi Kerja</th>
                                     </tr>
                                 </thead>
                                 <tbody id="mitraRecapTableBody">
-                                    <tr><td colspan="5" style="text-align: center; padding: 15px; color: var(--text-muted);">Memuat data mitra...</td></tr>
+                                    <tr><td colspan="5" class="text-center p-3 text-muted">Memuat data mitra...</td></tr>
                                 </tbody>
                             </table>
                         </div>
